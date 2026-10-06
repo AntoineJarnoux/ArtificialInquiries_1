@@ -100,21 +100,9 @@ classDiagram
 | Q2 | 2 | DESSIN | À quoi ressemble ton environnement de travail ? |
 | Q3 | 3 | TEXTE | En quelques mots, que fais-tu ? |
 
-## Correspondance avec Omeka S
+## Format de sauvegarde (JSON)
 
-Chaque classe « principale » devient un **item** Omeka S, avec une classe de ressource issue des vocabulaires installés par défaut et un **modèle de ressource** (*resource template*) qui fixe ses propriétés. Les liens entre classes deviennent des valeurs de type **ressource Omeka** (lien vers un autre item).
-
-| Classe UML | Classe Omeka S | Modèle de ressource | Propriétés |
-|---|---|---|---|
-| Participant | `foaf:Person` | AI_Participant | `foaf:nick` (pseudo), `dcterms:created` |
-| Exercice | `dctype:InteractiveResource` | AI_Exercice | `dcterms:identifier` (« 1 »), `dcterms:title`, `dcterms:isPartOf` (bloc), `dcterms:description` (consigne) |
-| Question | `dctype:Text` | AI_Question | `bibo:number` (ordre), `dcterms:title` (libellé), `dcterms:type` (DESSIN / TEXTE), `dcterms:isPartOf` → Exercice |
-| Passation | `dctype:Event` | AI_Passation | `dcterms:date`, `dcterms:temporal` (moment), `dcterms:creator` → Participant, `dcterms:references` → Exercice ; média : planche PNG |
-| ReponseDessin | `dctype:StillImage` | AI_ReponseDessin | `dcterms:isPartOf` → Passation, `dcterms:relation` → Question, `bibo:content` (traits en JSON), `dcterms:modified` ; média : PNG du dessin |
-| ReponseTexte | `dctype:Text` | AI_ReponseTexte | `dcterms:isPartOf` → Passation, `dcterms:relation` → Question, `bibo:content` (texte), `dcterms:modified` |
-| Trait, Point, Outil | — | — | pas d'item : sérialisés en JSON dans `bibo:content` de la ReponseDessin |
-
-Exemple de JSON stocké dans `bibo:content` :
+Les passations sont enregistrées dans le navigateur et exportables en JSON, avec la même structure que le diagramme. Les traits d'un dessin sont une liste d'objets :
 
 ```json
 [
@@ -124,7 +112,3 @@ Exemple de JSON stocké dans `bibo:content` :
     "points": [[200.0, 210.0], [205.3, 214.8]] }
 ]
 ```
-
-Les traits ne sont pas des items : un dessin en contient des centaines, et ils n'ont pas de sens seuls. Les sérialiser en JSON garde Omeka S lisible tout en permettant de rejouer le dessin.
-
-Les classes `dctype:Text` (Question et ReponseTexte) sont distinguées par leur modèle de ressource. Une évolution possible est d'importer un petit vocabulaire dédié (`ai:Passation`, `ai:ReponseDessin`…) dans Omeka S.

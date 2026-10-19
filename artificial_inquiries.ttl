@@ -1,0 +1,226 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix o: <http://omeka.org/s/vocabs/o#> .
+@prefix artinq: <https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#> .
+
+<https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#> a owl:Ontology ;
+    dcterms:title "Artificial Inquiries" .
+
+# ──────────────────────────────────────────────
+# CLASSES
+# ──────────────────────────────────────────────
+
+artinq:Participant a rdfs:Class ;
+    rdfs:label "Participant" ;
+    rdfs:comment "Personne qui fait l'exercice." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:Exercice a rdfs:Class ;
+    rdfs:label "Exercice" ;
+    rdfs:comment "Exercice du vademecum Artificial Inquiries (ex. exercice 1 « Draw It Like You See It »)." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:Question a rdfs:Class ;
+    rdfs:label "Question" ;
+    rdfs:comment "Question ou consigne d'un exercice, à laquelle on répond par un dessin ou un texte." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:Passation a rdfs:Class ;
+    rdfs:label "Passation" ;
+    rdfs:comment "Une fois où un participant fait l'exercice, à une date et à un moment donnés." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:Reponse a rdfs:Class ;
+    rdfs:label "Réponse" ;
+    rdfs:comment "Réponse à une question pendant une passation (classe abstraite)." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:ReponseDessin a rdfs:Class ;
+    rdfs:label "Réponse dessin" ;
+    rdfs:comment "Réponse dessinée dans un carré, composée de traits. L'image PNG est jointe en média." ;
+    rdfs:subClassOf artinq:Reponse ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:ReponseTexte a rdfs:Class ;
+    rdfs:label "Réponse texte" ;
+    rdfs:comment "Réponse écrite à une question." ;
+    rdfs:subClassOf artinq:Reponse ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:Trait a rdfs:Class ;
+    rdfs:label "Trait" ;
+    rdfs:comment "Un trait d'un dessin : outil, couleur, épaisseur et liste des points par lesquels il passe." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+# ──────────────────────────────────────────────
+# PROPRIÉTÉS — Participant
+# ──────────────────────────────────────────────
+
+artinq:pseudo a rdf:Property ;
+    rdfs:label "pseudo" ;
+    rdfs:comment "Pseudo du participant." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:inscritLe a rdf:Property ;
+    rdfs:label "inscrit le" ;
+    rdfs:comment "Date d'inscription du participant." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+# ──────────────────────────────────────────────
+# PROPRIÉTÉS — Exercice
+# ──────────────────────────────────────────────
+
+artinq:numero a rdf:Property ;
+    rdfs:label "numéro" ;
+    rdfs:comment "Numéro de l'exercice dans le vademecum." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:titre a rdf:Property ;
+    rdfs:label "titre" ;
+    rdfs:comment "Titre de l'exercice." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:bloc a rdf:Property ;
+    rdfs:label "bloc" ;
+    rdfs:comment "Bloc du vademecum auquel appartient l'exercice (ex. 01 Qualifying)." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:consigne a rdf:Property ;
+    rdfs:label "consigne" ;
+    rdfs:comment "Consigne de l'exercice." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:contientQuestion a rdf:Property ;
+    rdfs:label "contient la question" ;
+    rdfs:comment "Lien de l'exercice vers une de ses questions." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+# ──────────────────────────────────────────────
+# PROPRIÉTÉS — Question
+# ──────────────────────────────────────────────
+
+artinq:ordre a rdf:Property ;
+    rdfs:label "ordre" ;
+    rdfs:comment "Position de la question dans l'exercice." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:libelle a rdf:Property ;
+    rdfs:label "libellé" ;
+    rdfs:comment "Texte de la question." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:typeQuestion a rdf:Property ;
+    rdfs:label "type de question" ;
+    rdfs:comment "DESSIN ou TEXTE." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+# ──────────────────────────────────────────────
+# PROPRIÉTÉS — Passation
+# ──────────────────────────────────────────────
+
+artinq:datePassation a rdf:Property ;
+    rdfs:label "date de passation" ;
+    rdfs:comment "Date et heure de la passation." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:moment a rdf:Property ;
+    rdfs:label "moment" ;
+    rdfs:comment "Moment de la passation dans l'enquête (ex. avant les autres exercices, après le bloc 03)." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:realiseePar a rdf:Property ;
+    rdfs:label "réalisée par" ;
+    rdfs:comment "Lien de la passation vers le participant qui l'a faite." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:porteSur a rdf:Property ;
+    rdfs:label "porte sur" ;
+    rdfs:comment "Lien de la passation vers l'exercice." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:contientReponse a rdf:Property ;
+    rdfs:label "contient la réponse" ;
+    rdfs:comment "Lien de la passation vers une de ses réponses." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+# ──────────────────────────────────────────────
+# PROPRIÉTÉS — Réponse, ReponseDessin, ReponseTexte
+# ──────────────────────────────────────────────
+
+artinq:repondA a rdf:Property ;
+    rdfs:label "répond à" ;
+    rdfs:comment "Lien de la réponse vers la question." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:modifieeLe a rdf:Property ;
+    rdfs:label "modifiée le" ;
+    rdfs:comment "Date de dernière modification de la réponse." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:composeDe a rdf:Property ;
+    rdfs:label "composé du trait" ;
+    rdfs:comment "Lien de la réponse dessin vers un de ses traits." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:texte a rdf:Property ;
+    rdfs:label "texte" ;
+    rdfs:comment "Texte de la réponse écrite." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+# ──────────────────────────────────────────────
+# PROPRIÉTÉS — Trait (et ses points)
+# ──────────────────────────────────────────────
+
+artinq:outil a rdf:Property ;
+    rdfs:label "outil" ;
+    rdfs:comment "CRAYON, FEUTRE ou GOMME." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:couleur a rdf:Property ;
+    rdfs:label "couleur" ;
+    rdfs:comment "Couleur du trait (code hexadécimal, ex. #232a38)." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:epaisseur a rdf:Property ;
+    rdfs:label "épaisseur" ;
+    rdfs:comment "Épaisseur du trait en pixels." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:points a rdf:Property ;
+    rdfs:label "points" ;
+    rdfs:comment "Points par lesquels passe le trait, en JSON : [[x, y], [x, y], …]." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .

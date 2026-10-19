@@ -1,0 +1,108 @@
+{
+    "o:label": "artinq_Exercice",
+    "o:resource_template_property": [
+        {
+            "o:alternate_label": null,
+            "o:alternate_comment": null,
+            "o:is_required": true,
+            "o:is_private": false,
+            "o:default_lang": null,
+            "data_types": [
+                {
+                    "name": "literal",
+                    "label": "Text"
+                }
+            ],
+            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_label": "Artificial Inquiries",
+            "local_name": "numero",
+            "label": "num\u00e9ro"
+        },
+        {
+            "o:alternate_label": null,
+            "o:alternate_comment": null,
+            "o:is_required": true,
+            "o:is_private": false,
+            "o:default_lang": null,
+            "data_types": [
+                {
+                    "name": "literal",
+                    "label": "Text"
+                }
+            ],
+            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_label": "Artificial Inquiries",
+            "local_name": "titre",
+            "label": "titre"
+        },
+        {
+            "o:alternate_label": null,
+            "o:alternate_comment": null,
+            "o:is_required": false,
+            "o:is_private": false,
+            "o:default_lang": null,
+            "data_types": [
+                {
+                    "name": "literal",
+                    "label": "Text"
+                }
+            ],
+            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_label": "Artificial Inquiries",
+            "local_name": "bloc",
+            "label": "bloc"
+        },
+        {
+            "o:alternate_label": null,
+            "o:alternate_comment": null,
+            "o:is_required": false,
+            "o:is_private": false,
+            "o:default_lang": null,
+            "data_types": [
+                {
+                    "name": "literal",
+                    "label": "Text"
+                }
+            ],
+            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_label": "Artificial Inquiries",
+            "local_name": "consigne",
+            "label": "consigne"
+        },
+        {
+            "o:alternate_label": null,
+            "o:alternate_comment": null,
+            "o:is_required": false,
+            "o:is_private": false,
+            "o:default_lang": null,
+            "data_types": [
+                {
+                    "name": "resource:item",
+                    "label": "Item"
+                }
+            ],
+            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_label": "Artificial Inquiries",
+            "local_name": "contientQuestion",
+            "label": "contient la question"
+        }
+    ],
+    "o:resource_class": {
+        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_label": "Artificial Inquiries",
+        "local_name": "Exercice",
+        "label": "Exercice"
+    },
+    "o:title_property": {
+        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_label": "Artificial Inquiries",
+        "local_name": "titre",
+        "label": "titre"
+    },
+    "o:description_property": {
+        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_label": "Artificial Inquiries",
+        "local_name": "consigne",
+        "label": "consigne"
+    }
+}

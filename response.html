@@ -123,6 +123,9 @@
       <label>Serveur CAS
         <input type="url" id="set-cas" placeholder="https://cas.univ-paris8.fr/cas">
       </label>
+      <label>Relais de validation CAS (vide = vérification directe)
+        <input type="url" id="set-casproxy" placeholder="http://localhost/ai1-cas/validate.php">
+      </label>
       <label>Client ID Google
         <input type="text" id="set-google" placeholder="xxxx.apps.googleusercontent.com" spellcheck="false">
       </label>
@@ -259,6 +262,7 @@
   const DEFAULTS = {
     api: 'http://localhost/omeka-s/api/',
     cas: 'https://cas.univ-paris8.fr/cas',
+    casProxy: 'http://localhost/ai1-cas/validate.php',   // relais PHP (cas/validate.php) : le CAS de Paris 8 refuse CORS
     google: '',          // Client ID OAuth Google (public) — à créer dans Google Cloud Console
   };
   const PREFIX = 'artinq';
@@ -291,11 +295,12 @@
     const key = store.get('key') || store.get('key', true) || {};
     return {
       api: pub.api || DEFAULTS.api, cas: pub.cas || DEFAULTS.cas, google: pub.google || DEFAULTS.google,
+      casProxy: pub.casProxy !== undefined ? pub.casProxy : DEFAULTS.casProxy,
       ident: key.ident || '', cred: key.cred || '', remember: !!store.get('key'),
     };
   }
   function saveSettings(s) {
-    store.set('settings', { api: s.api, cas: s.cas, google: s.google });
+    store.set('settings', { api: s.api, cas: s.cas, casProxy: s.casProxy, google: s.google });
     store.del('key');
     if (s.ident && s.cred) store.set('key', { ident: s.ident, cred: s.cred }, !s.remember);
   }
@@ -554,17 +559,23 @@
     const base = store.get('casPending', true) || S.settings.cas.replace(/\/+$/, '');
     store.del('casPending');
     history.replaceState(null, '', serviceUrl());
+    // Un ticket CAS ne sert qu'une fois : on passe par le relais s'il est configuré, sinon on interroge le CAS directement.
+    const q = 'service=' + encodeURIComponent(serviceUrl()) + '&ticket=' + encodeURIComponent(ticket);
+    const proxy = S.settings.casProxy;
+    const target = proxy ? proxy + (proxy.includes('?') ? '&' : '?') + q : base + '/p3/serviceValidate?format=JSON&' + q;
     let r;
-    try {
-      r = await fetch(base + '/p3/serviceValidate?format=JSON&service=' + encodeURIComponent(serviceUrl()) + '&ticket=' + encodeURIComponent(ticket));
-    } catch (e) {
-      throw new Error("le serveur CAS a bien renvoyé un ticket, mais il interdit au navigateur de le vérifier (CORS). Il faut alors un petit serveur intermédiaire pour la validation.");
+    try { r = await fetch(target); }
+    catch (e) {
+      throw new Error(proxy
+        ? "le relais de validation CAS ne répond pas (" + proxy + ") : vérifie qu'Apache tourne et que cas/validate.php est installé."
+        : "le serveur CAS a bien renvoyé un ticket, mais il interdit au navigateur de le vérifier (CORS). Configure le relais de validation dans les Paramètres.");
     }
     const text = (await r.text()).trim();
     let user = null, failure = null;
     if (text.startsWith('{')) {
-      const sr = JSON.parse(text).serviceResponse || {};
-      if (sr.authenticationSuccess) user = sr.authenticationSuccess.user;
+      const j = JSON.parse(text), sr = j.serviceResponse || {};
+      if (j.error) failure = j.error;
+      else if (sr.authenticationSuccess) user = sr.authenticationSuccess.user;
       else failure = (sr.authenticationFailure && sr.authenticationFailure.description) || 'ticket refusé';
     } else {
       const doc = new DOMParser().parseFromString(text, 'application/xml');
@@ -948,14 +959,14 @@
   function openSettings() {
     const s = S.settings;
     $('set-api').value = s.api; $('set-ident').value = s.ident; $('set-cred').value = s.cred;
-    $('set-remember').checked = s.remember; $('set-cas').value = s.cas; $('set-google').value = s.google;
+    $('set-remember').checked = s.remember; $('set-cas').value = s.cas; $('set-casproxy').value = s.casProxy; $('set-google').value = s.google;
     $('settings').hidden = false;
   }
 
   async function applySettings() {
     S.settings = {
       api: $('set-api').value.trim() || DEFAULTS.api, ident: $('set-ident').value.trim(), cred: $('set-cred').value.trim(),
-      remember: $('set-remember').checked, cas: $('set-cas').value.trim() || DEFAULTS.cas, google: $('set-google').value.trim(),
+      remember: $('set-remember').checked, cas: $('set-cas').value.trim() || DEFAULTS.cas, casProxy: $('set-casproxy').value.trim(), google: $('set-google').value.trim(),
     };
     saveSettings(S.settings);
     $('cas-server').textContent = S.settings.cas;

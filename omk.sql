@@ -42,7 +42,7 @@ CREATE TABLE `api_key` (
 
 LOCK TABLES `api_key` WRITE;
 /*!40000 ALTER TABLE `api_key` DISABLE KEYS */;
-INSERT INTO `api_key` VALUES ('SDQSmycnfcMlLFbSUxpeLPzSNU8PCcme',1,'test','$2y$10$JfLmQ6qMBBwbus4Wr9IlCO1DBCqPDHynDdujADFMwl0VDh/XtKo4e','\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','2026-10-19 12:04:17','2026-10-06 07:24:01');
+INSERT INTO `api_key` VALUES ('SDQSmycnfcMlLFbSUxpeLPzSNU8PCcme',1,'test','$2y$10$JfLmQ6qMBBwbus4Wr9IlCO1DBCqPDHynDdujADFMwl0VDh/XtKo4e','\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','2026-10-26 13:50:33','2026-10-06 07:24:01');
 /*!40000 ALTER TABLE `api_key` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -425,7 +425,7 @@ CREATE TABLE `resource` (
   CONSTRAINT `FK_BC91F416448CC1BD` FOREIGN KEY (`resource_class_id`) REFERENCES `resource_class` (`id`) ON DELETE SET NULL,
   CONSTRAINT `FK_BC91F4167E3C61F9` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `FK_BC91F416FDFF2E92` FOREIGN KEY (`thumbnail_id`) REFERENCES `asset` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -532,7 +532,7 @@ CREATE TABLE `resource_template_property` (
   KEY `IDX_4689E2F1549213EC` (`property_id`),
   CONSTRAINT `FK_4689E2F116131EA` FOREIGN KEY (`resource_template_id`) REFERENCES `resource_template` (`id`),
   CONSTRAINT `FK_4689E2F1549213EC` FOREIGN KEY (`property_id`) REFERENCES `property` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -541,7 +541,7 @@ CREATE TABLE `resource_template_property` (
 
 LOCK TABLES `resource_template_property` WRITE;
 /*!40000 ALTER TABLE `resource_template_property` DISABLE KEYS */;
-INSERT INTO `resource_template_property` VALUES (1,1,1,NULL,NULL,1,NULL,0,0,NULL),(2,1,15,NULL,NULL,2,NULL,0,0,NULL),(3,1,8,NULL,NULL,3,NULL,0,0,NULL),(4,1,2,NULL,NULL,4,NULL,0,0,NULL),(5,1,7,NULL,NULL,5,NULL,0,0,NULL),(6,1,4,NULL,NULL,6,NULL,0,0,NULL),(7,1,9,NULL,NULL,7,NULL,0,0,NULL),(8,1,12,NULL,NULL,8,NULL,0,0,NULL),(9,1,40,'Place',NULL,9,NULL,0,0,NULL),(10,1,5,NULL,NULL,10,NULL,0,0,NULL),(11,1,17,NULL,NULL,11,NULL,0,0,NULL),(12,1,6,NULL,NULL,12,NULL,0,0,NULL),(13,1,25,NULL,NULL,13,NULL,0,0,NULL),(14,1,10,NULL,NULL,14,NULL,0,0,NULL),(15,1,13,NULL,NULL,15,NULL,0,0,NULL),(16,1,29,NULL,NULL,16,NULL,0,0,NULL),(17,1,30,NULL,NULL,17,NULL,0,0,NULL),(18,1,50,NULL,NULL,18,NULL,0,0,NULL),(19,1,3,NULL,NULL,19,NULL,0,0,NULL),(20,1,41,NULL,NULL,20,NULL,0,0,NULL),(21,2,187,NULL,NULL,1,'[\"literal\"]',1,0,NULL),(22,2,188,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(23,2,189,NULL,NULL,3,'[\"literal\"]',0,0,NULL),(24,2,190,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(25,2,191,NULL,NULL,5,'[\"resource:item\"]',0,0,NULL),(26,3,185,NULL,NULL,1,'[\"literal\"]',1,0,NULL),(27,3,186,NULL,NULL,2,'[\"literal\"]',0,0,NULL),(28,4,1,'Titre de la passation',NULL,1,'[\"literal\"]',0,0,NULL),(29,4,195,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(30,4,196,NULL,NULL,3,'[\"literal\"]',0,0,NULL),(31,4,197,NULL,NULL,4,'[\"resource:item\"]',1,0,NULL),(32,4,198,NULL,NULL,5,'[\"resource:item\"]',1,0,NULL),(33,4,199,NULL,NULL,6,'[\"resource:item\"]',0,0,NULL),(34,5,192,NULL,NULL,1,'[\"literal\"]',1,0,NULL),(35,5,193,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(36,5,194,NULL,NULL,3,'[\"literal\"]',1,0,NULL),(37,6,1,'Titre de la réponse',NULL,1,'[\"literal\"]',0,0,NULL),(38,6,200,NULL,NULL,2,'[\"resource:item\"]',1,0,NULL),(39,6,202,NULL,NULL,3,'[\"resource:item\"]',0,0,NULL),(40,6,201,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(41,7,1,'Titre de la réponse',NULL,1,'[\"literal\"]',0,0,NULL),(42,7,200,NULL,NULL,2,'[\"resource:item\"]',1,0,NULL),(43,7,203,NULL,NULL,3,'[\"literal\"]',1,0,NULL),(44,7,201,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(45,8,1,'Titre du trait',NULL,1,'[\"literal\"]',0,0,NULL),(46,8,204,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(47,8,205,NULL,NULL,3,'[\"literal\"]',0,0,NULL),(48,8,206,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(49,8,207,NULL,NULL,5,'[\"literal\"]',1,0,NULL);
+INSERT INTO `resource_template_property` VALUES (1,1,1,NULL,NULL,1,NULL,0,0,NULL),(2,1,15,NULL,NULL,2,NULL,0,0,NULL),(3,1,8,NULL,NULL,3,NULL,0,0,NULL),(4,1,2,NULL,NULL,4,NULL,0,0,NULL),(5,1,7,NULL,NULL,5,NULL,0,0,NULL),(6,1,4,NULL,NULL,6,NULL,0,0,NULL),(7,1,9,NULL,NULL,7,NULL,0,0,NULL),(8,1,12,NULL,NULL,8,NULL,0,0,NULL),(9,1,40,'Place',NULL,9,NULL,0,0,NULL),(10,1,5,NULL,NULL,10,NULL,0,0,NULL),(11,1,17,NULL,NULL,11,NULL,0,0,NULL),(12,1,6,NULL,NULL,12,NULL,0,0,NULL),(13,1,25,NULL,NULL,13,NULL,0,0,NULL),(14,1,10,NULL,NULL,14,NULL,0,0,NULL),(15,1,13,NULL,NULL,15,NULL,0,0,NULL),(16,1,29,NULL,NULL,16,NULL,0,0,NULL),(17,1,30,NULL,NULL,17,NULL,0,0,NULL),(18,1,50,NULL,NULL,18,NULL,0,0,NULL),(19,1,3,NULL,NULL,19,NULL,0,0,NULL),(20,1,41,NULL,NULL,20,NULL,0,0,NULL),(21,2,187,NULL,NULL,1,'[\"literal\"]',1,0,NULL),(22,2,188,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(23,2,189,NULL,NULL,3,'[\"literal\"]',0,0,NULL),(24,2,190,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(25,2,191,NULL,NULL,5,'[\"resource:item\"]',0,0,NULL),(26,3,185,NULL,NULL,1,'[\"literal\"]',1,0,NULL),(27,3,186,NULL,NULL,2,'[\"literal\"]',0,0,NULL),(28,4,1,'Titre de la passation',NULL,1,'[\"literal\"]',0,0,NULL),(29,4,195,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(30,4,196,NULL,NULL,3,'[\"literal\"]',0,0,NULL),(31,4,197,NULL,NULL,4,'[\"resource:item\"]',1,0,NULL),(32,4,198,NULL,NULL,5,'[\"resource:item\"]',1,0,NULL),(33,4,199,NULL,NULL,6,'[\"resource:item\"]',0,0,NULL),(34,5,192,NULL,NULL,1,'[\"literal\"]',1,0,NULL),(35,5,193,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(36,5,194,NULL,NULL,3,'[\"literal\"]',1,0,NULL),(37,6,1,'Titre de la réponse',NULL,1,'[\"literal\"]',0,0,NULL),(38,6,200,NULL,NULL,2,'[\"resource:item\"]',1,0,NULL),(39,6,202,NULL,NULL,3,'[\"resource:item\"]',0,0,NULL),(40,6,201,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(41,7,1,'Titre de la réponse',NULL,1,'[\"literal\"]',0,0,NULL),(42,7,200,NULL,NULL,2,'[\"resource:item\"]',1,0,NULL),(43,7,203,NULL,NULL,3,'[\"literal\"]',1,0,NULL),(44,7,201,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(45,8,1,'Titre du trait',NULL,1,'[\"literal\"]',0,0,NULL),(46,8,204,NULL,NULL,2,'[\"literal\"]',1,0,NULL),(47,8,205,NULL,NULL,3,'[\"literal\"]',0,0,NULL),(48,8,206,NULL,NULL,4,'[\"literal\"]',0,0,NULL),(49,8,207,NULL,NULL,5,'[\"literal\"]',1,0,NULL),(50,3,179,'compte','Identifiant du compte utilisé pour se connecter (fournisseur:identifiant, ex. github:AntoineJarnoux)',3,'[\"literal\"]',0,0,NULL);
 /*!40000 ALTER TABLE `resource_template_property` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -909,7 +909,7 @@ CREATE TABLE `value` (
   CONSTRAINT `FK_1D775834549213EC` FOREIGN KEY (`property_id`) REFERENCES `property` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_1D77583489329D25` FOREIGN KEY (`resource_id`) REFERENCES `resource` (`id`),
   CONSTRAINT `FK_1D7758349B66727E` FOREIGN KEY (`value_annotation_id`) REFERENCES `value_annotation` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -986,4 +986,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-19 19:49:40
+-- Dump completed on 2026-10-26 20:43:16

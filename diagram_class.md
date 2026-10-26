@@ -9,6 +9,7 @@ classDiagram
     class Participant {
         +String pseudo
         +DateTime inscritLe
+        +String compte
     }
 
     class Exercice {
@@ -87,7 +88,7 @@ classDiagram
 
 ## Lecture du diagramme
 
-- Un **Participant** réalise plusieurs **Passations** de l'exercice. C'est ce qui permet de refaire l'exercice à différents moments et de comparer.
+- Un **Participant** réalise plusieurs **Passations** de l'exercice. C'est ce qui permet de refaire l'exercice à différents moments et de comparer. Son `compte` indique avec quel compte il s'est connecté (ex. `github:AntoineJarnoux`).
 - Un **Exercice** contient ses **Questions**. Pour l'exercice 1 il y en a trois (tableau ci-dessous). Le modèle reste valable pour d'autres exercices du vademecum.
 - Une **Passation** contient une **Réponse** par question. Une réponse est soit un **dessin**, soit un **texte** (héritage).
 - Un **dessin** est une suite de **Traits** ; un trait a un outil, une couleur, une épaisseur et une suite de **Points**. Garder les traits (et pas seulement l'image) permet d'annuler et de rejouer le dessin.

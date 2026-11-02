@@ -231,6 +231,22 @@
   // Modèles de ressource de cet exercice dans la base commune (« Ex1 Participant », « Ex1 Passation »…)
   const TPL = 'Ex1 ';
   const WRITES = ['Participant', 'Passation', 'ReponseDessin', 'ReponseTexte', 'Trait'];
+  // Modèles « Ex1 … » (mêmes définitions que le dossier resource-template/) : [terme, obligatoire, type, libellé]
+  const TEMPLATES = [
+    {"label": "Ex1 Exercice", "cls": "Exercice", "title": "artinq:titre", "desc": "artinq:consigne", "props": [["artinq:numero", true, "literal", null], ["artinq:titre", true, "literal", null], ["artinq:bloc", false, "literal", null], ["artinq:consigne", false, "literal", null], ["artinq:aPourQuestion", false, "resource:item", null]]},
+    {"label": "Ex1 Participant", "cls": "Participant", "title": "artinq:pseudo", "props": [["artinq:pseudo", true, "literal", null], ["artinq:dateInscription", false, "literal", null], ["artinq:fournisseur", false, "literal", null], ["artinq:identifiant", false, "literal", null]]},
+    {"label": "Ex1 Passation", "cls": "Passation", "title": "dcterms:title", "props": [["dcterms:title", false, "literal", "Titre de la passation"], ["artinq:date", true, "literal", "date de passation"], ["artinq:moment", false, "literal", null], ["artinq:realiseePar", true, "resource:item", null], ["artinq:porteSur", true, "resource:item", null], ["artinq:aPourReponse", false, "resource:item", null]]},
+    {"label": "Ex1 Question", "cls": "Question", "title": "artinq:libelle", "props": [["artinq:ordre", true, "literal", null], ["artinq:libelle", true, "literal", null], ["artinq:type", true, "literal", "type de question"]]},
+    {"label": "Ex1 ReponseDessin", "cls": "ReponseDessin", "title": "dcterms:title", "props": [["dcterms:title", false, "literal", "Titre de la réponse"], ["artinq:repondA", true, "resource:item", null], ["artinq:aPourTrait", false, "resource:item", null], ["artinq:dateModification", false, "literal", null]]},
+    {"label": "Ex1 ReponseTexte", "cls": "ReponseTexte", "title": "dcterms:title", "props": [["dcterms:title", false, "literal", "Titre de la réponse"], ["artinq:repondA", true, "resource:item", null], ["artinq:texte", true, "literal", null], ["artinq:dateModification", false, "literal", null]]},
+    {"label": "Ex1 Trait", "cls": "Trait", "title": "dcterms:title", "props": [["dcterms:title", false, "literal", "Titre du trait"], ["artinq:outil", true, "literal", null], ["artinq:couleur", false, "literal", null], ["artinq:epaisseur", false, "literal", null], ["artinq:points", true, "literal", null]]},
+  ];
+  // Questions de l'exercice 1, créées si l'item « Exercice 1 » n'en a pas encore
+  const QUESTIONS = [
+    { ordre: '1', libelle: 'À quoi ressemble un LLM ?', type: 'DESSIN' },
+    { ordre: '2', libelle: 'À quoi ressemble ton environnement de travail ?', type: 'DESSIN' },
+    { ordre: '3', libelle: 'En quelques mots, que fais-tu ?', type: 'TEXTE' },
+  ];
   const COLORS = ['#232a38', '#c0392b', '#2463eb', '#2e8b57', '#e0a100'];
   const MOMENT_DEFAUT = 'Avant les autres exercices';
 
@@ -383,6 +399,43 @@
   }
   const deleteMedia = id => api('media/' + id, { method: 'DELETE' });
 
+  // ── Première connexion : installation dans la base commune ────
+  // Crée les modèles « Ex1 … » qui manquent, avec la clé API de la personne connectée
+  async function installTemplates(M) {
+    const ref = term => ({ 'o:id': M.P[term] });
+    for (const t of TEMPLATES) {
+      if (M.RT[t.label]) continue;
+      say('Première connexion : création du modèle « ' + t.label + ' » dans Omeka S…');
+      const data = {
+        'o:label': t.label,
+        'o:resource_class': { 'o:id': M.C[t.cls] },
+        'o:resource_template_property': t.props.map(([term, required, type, alt]) => ({
+          'o:property': ref(term), 'o:alternate_label': alt, 'o:alternate_comment': null,
+          'o:is_required': required, 'o:is_private': false, 'o:data_type': [type], 'o:default_lang': null,
+        })),
+      };
+      if (t.title) data['o:title_property'] = ref(t.title);
+      if (t.desc) data['o:description_property'] = ref(t.desc);
+      try { M.RT[t.label] = (await api('resource_templates', { method: 'POST', json: data }))['o:id']; }
+      catch (e) { throw new Error('Impossible de créer le modèle « ' + t.label + ' » (' + e.message + '). Vérifie ta clé API.'); }
+    }
+  }
+  // Crée les 3 questions et les relie à l'item « Exercice 1 » (propriété « a pour question »)
+  async function installQuestions(M) {
+    say("Première connexion : création des questions de l'exercice 1…");
+    const ids = [];
+    for (const q of QUESTIONS) {
+      const it = await createItem(newItem('Question', lit(PREFIX + ':ordre', q.ordre), lit(PREFIX + ':libelle', q.libelle), lit(PREFIX + ':type', q.type)));
+      ids.push(it['o:id']);
+    }
+    try { M.exercice = await updateItem(M.exercice['o:id'], link(PREFIX + ':aPourQuestion', ids)); }
+    catch (e) {
+      await Promise.all(ids.map(id => deleteItem(id).catch(() => null)));
+      throw new Error("Impossible d'ajouter les questions à l'item « Exercice 1 » (" + e.message + ').');
+    }
+    return ids;
+  }
+
   // ── Vocabulaire, modèles et exercice 1 dans Omeka S ──────────
   async function loadMeta() {
     const [pa, pd, cls, rts] = await Promise.all([
@@ -399,6 +452,11 @@
     if (noP.length) throw new Error('Propriétés absentes du vocabulaire « ' + PREFIX + ' » de cet Omeka S : ' + noP.join(', ') + '.');
     const noC = CLASSES.filter(c => !M.C[c]);
     if (noC.length) throw new Error('Classes absentes du vocabulaire « ' + PREFIX + ' » de cet Omeka S : ' + noC.join(', ') + '.');
+    S.meta = M;
+    if (CLASSES.some(c => !M.RT[TPL + c])) {
+      if (!S.settings.ident || !S.settings.cred) throw new Error('Remplis key_identity et key_credential.');
+      await installTemplates(M);
+    }
     const noRT = WRITES.filter(c => !M.RT[TPL + c]);
     if (noRT.length) throw new Error('Modèles de ressource absents de cet Omeka S : ' + noRT.map(c => '« ' + TPL + c + ' »').join(', ') + ' (à importer depuis le dossier resource-template/).');
     S.meta = M;
@@ -413,8 +471,8 @@
     } });
     if (!ex.length) throw new Error("L'exercice 1 est introuvable dans Omeka S (item de classe Exercice, numéro 1).");
     M.exercice = ex.find(e => links(e, PREFIX + ':aPourQuestion').length) || ex[0];
-    const qIds = links(M.exercice, PREFIX + ':aPourQuestion');
-    if (!qIds.length) throw new Error("L'item « Exercice 1 » n'a pas encore ses questions : ajoute-lui les 3 questions avec la propriété « a pour question ».");
+    let qIds = links(M.exercice, PREFIX + ':aPourQuestion');
+    if (!qIds.length) qIds = await installQuestions(M);
     const qs = await Promise.all(qIds.map(id => api('items/' + id)));
     qs.sort((a, b) => Number(val(a, PREFIX + ':ordre')) - Number(val(b, PREFIX + ':ordre')));
     M.questions = qs.map(q => ({ id: q['o:id'], libelle: val(q, PREFIX + ':libelle'), type: val(q, PREFIX + ':type') }));

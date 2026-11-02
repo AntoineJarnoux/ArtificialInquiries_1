@@ -143,6 +143,9 @@
         <label>Adresse de l'API Omeka S
           <input type="url" id="f-api">
         </label>
+        <label>Relais de l'API pour la base commune (vide = appel direct)
+          <input type="url" id="f-apiproxy" placeholder="https://xxxx.alwaysdata.net/omk.php">
+        </label>
         <label>Serveur CAS
           <input type="url" id="f-cas">
         </label>
@@ -221,9 +224,11 @@
     api: 'https://humanum-p8.fr/omk_artificialinquiries/api/',
     cas: 'https://cas.univ-paris8.fr/cas',
     casProxy: 'http://localhost/ai1-cas/validate.php',  // relais PHP (cas/validate.php) : le CAS de Paris 8 refuse la vérification depuis le navigateur
+    apiProxy: '',  // relais PHP (relais/omk.php) : la base commune n'envoie pas d'en-tête CORS
     google: '1046577410496-qjkqfq4448rv2iggia9tpkfve08sf40q.apps.googleusercontent.com',  // Client ID Google (public)
   };
   const PREFIX = 'artinq';
+  const COMMON_API = 'https://humanum-p8.fr/omk_artificialinquiries/api/';  // base commune, appelée via le relais
   // Termes du vocabulaire commun artinq utilisés par cette page
   const TERMS = ['pseudo', 'dateInscription', 'fournisseur', 'identifiant', 'numero', 'consigne', 'aPourQuestion',
     'ordre', 'libelle', 'type', 'date', 'moment', 'realiseePar', 'porteSur', 'aPourReponse', 'repondA',
@@ -255,18 +260,19 @@
     return {
       api: pub.api || DEFAULTS.api, cas: pub.cas || DEFAULTS.cas, google: pub.google || DEFAULTS.google,
       casProxy: pub.casProxy !== undefined ? pub.casProxy : DEFAULTS.casProxy,
+      apiProxy: pub.apiProxy !== undefined ? pub.apiProxy : DEFAULTS.apiProxy,
       email: pub.email || '', ident: key.ident || '', cred: key.cred || '', remember: !!store.get('key'),
     };
   }
   function saveSettings(s) {
-    store.set('settings', { api: s.api, cas: s.cas, casProxy: s.casProxy, google: s.google, email: s.email });
+    store.set('settings', { api: s.api, apiProxy: s.apiProxy, cas: s.cas, casProxy: s.casProxy, google: s.google, email: s.email });
     store.del('key');
     if (s.ident && s.cred) store.set('key', { ident: s.ident, cred: s.cred }, !s.remember);
   }
   function readForm() {
     S.settings = {
       api: $('f-api').value.trim() || DEFAULTS.api, cas: $('f-cas').value.trim() || DEFAULTS.cas,
-      casProxy: $('f-casproxy').value.trim(), google: $('f-google').value.trim(),
+      casProxy: $('f-casproxy').value.trim(), apiProxy: $('f-apiproxy').value.trim(), google: $('f-google').value.trim(),
       email: $('f-email').value.trim(), ident: $('f-ident').value.trim(), cred: $('f-cred').value.trim(),
       remember: $('f-remember').checked,
     };
@@ -274,7 +280,7 @@
   }
   function fillForm() {
     const s = S.settings;
-    $('f-api').value = s.api; $('f-cas').value = s.cas; $('f-casproxy').value = s.casProxy; $('f-google').value = s.google;
+    $('f-api').value = s.api; $('f-apiproxy').value = s.apiProxy; $('f-cas').value = s.cas; $('f-casproxy').value = s.casProxy; $('f-google').value = s.google;
     $('f-email').value = s.email; $('f-ident').value = s.ident; $('f-cred').value = s.cred; $('f-remember').checked = s.remember;
   }
 
@@ -294,8 +300,11 @@
 
   // ── API Omeka S ───────────────────────────────────────────────
   const apiBase = () => S.settings.api.endsWith('/') ? S.settings.api : S.settings.api + '/';
+  const viaProxy = () => !!S.settings.apiProxy && apiBase() === COMMON_API;
   function apiUrl(path, params = {}) {
-    const u = new URL(path, apiBase());
+    let u;
+    if (viaProxy()) { u = new URL(S.settings.apiProxy); u.searchParams.set('path', path); }
+    else u = new URL(path, apiBase());
     for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
     if (S.settings.ident && S.settings.cred) {
       u.searchParams.set('key_identity', S.settings.ident);
@@ -322,7 +331,8 @@
       if (/^https?:\/\/(localhost|127\.0\.0\.1)[:/]/.test(S.settings.api)) {
         throw new Error("Impossible de joindre ton Omeka S local. Vérifie que XAMPP est allumé (Apache et MySQL). Si c'est le cas, ton navigateur a peut-être bloqué l'accès : clique sur l'icône à gauche de l'adresse de la page et autorise l'accès au réseau local, puis recharge la page.");
       }
-      throw new Error("Impossible de joindre Omeka S à l'adresse " + S.settings.api + ". Vérifie l'adresse dans « Réglages avancés ». Si elle est bonne, le serveur bloque cette page (CORS) : il doit autoriser " + location.origin + ".");
+      if (viaProxy()) throw new Error("Le relais de l'API (" + S.settings.apiProxy + ") ne répond pas. Vérifie son adresse dans « Réglages avancés ».");
+      throw new Error("Impossible de joindre Omeka S à l'adresse " + S.settings.api + ". Le serveur bloque cette page (CORS) : indique le relais de l'API dans « Réglages avancés ».");
     }
     const text = await r.text();
     let data = null;

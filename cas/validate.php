@@ -41,7 +41,7 @@ if (!preg_match('/^ST-[A-Za-z0-9._\-]+$/', $ticket)) reply(['error' => 'ticket i
 $url = $CAS_URL . '/serviceValidate?service=' . rawurlencode($service) . '&ticket=' . rawurlencode($ticket);
 $ctx = stream_context_create(['http' => ['timeout' => 10, 'ignore_errors' => true]]);
 $xml = @file_get_contents($url, false, $ctx);
-if ($xml === false) reply(['error' => 'serveur CAS injoignable depuis XAMPP'], 502);
+if ($xml === false) reply(['error' => 'serveur CAS injoignable depuis le relais'], 502);
 
 $doc = new DOMDocument();
 if (!@$doc->loadXML($xml)) reply(['error' => 'réponse CAS illisible'], 502);

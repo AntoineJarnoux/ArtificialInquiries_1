@@ -143,14 +143,8 @@
         <label>Adresse de l'API Omeka S
           <input type="url" id="f-api">
         </label>
-        <label>Relais de l'API pour la base commune (vide = appel direct)
-          <input type="url" id="f-apiproxy" placeholder="https://xxxx.alwaysdata.net/omk.php">
-        </label>
         <label>Serveur CAS
           <input type="url" id="f-cas">
-        </label>
-        <label>Relais de vérification CAS (vide = vérification directe)
-          <input type="url" id="f-casproxy">
         </label>
         <label>Client ID Google
           <input type="text" id="f-google" placeholder="xxxx.apps.googleusercontent.com" spellcheck="false">
@@ -262,20 +256,19 @@
     const key = store.get('key') || store.get('key', true) || {};
     return {
       api: pub.api || DEFAULTS.api, cas: pub.cas || DEFAULTS.cas, google: pub.google || DEFAULTS.google,
-      casProxy: pub.casProxy !== undefined ? pub.casProxy : DEFAULTS.casProxy,
-      apiProxy: pub.apiProxy !== undefined ? pub.apiProxy : DEFAULTS.apiProxy,
+      casProxy: DEFAULTS.casProxy, apiProxy: DEFAULTS.apiProxy,  // relais fixes (fonctions Vercel du dépôt)
       email: pub.email || '', ident: key.ident || '', cred: key.cred || '', remember: !!store.get('key'),
     };
   }
   function saveSettings(s) {
-    store.set('settings', { v: 2, api: s.api, apiProxy: s.apiProxy, cas: s.cas, casProxy: s.casProxy, google: s.google, email: s.email });
+    store.set('settings', { v: 2, api: s.api, cas: s.cas, google: s.google, email: s.email });
     store.del('key');
     if (s.ident && s.cred) store.set('key', { ident: s.ident, cred: s.cred }, !s.remember);
   }
   function readForm() {
     S.settings = {
       api: $('f-api').value.trim() || DEFAULTS.api, cas: $('f-cas').value.trim() || DEFAULTS.cas,
-      casProxy: $('f-casproxy').value.trim(), apiProxy: $('f-apiproxy').value.trim(), google: $('f-google').value.trim(),
+      casProxy: DEFAULTS.casProxy, apiProxy: DEFAULTS.apiProxy, google: $('f-google').value.trim(),
       email: $('f-email').value.trim(), ident: $('f-ident').value.trim(), cred: $('f-cred').value.trim(),
       remember: $('f-remember').checked,
     };
@@ -283,7 +276,7 @@
   }
   function fillForm() {
     const s = S.settings;
-    $('f-api').value = s.api; $('f-apiproxy').value = s.apiProxy; $('f-cas').value = s.cas; $('f-casproxy').value = s.casProxy; $('f-google').value = s.google;
+    $('f-api').value = s.api; $('f-cas').value = s.cas; $('f-google').value = s.google;
     $('f-email').value = s.email; $('f-ident').value = s.ident; $('f-cred').value = s.cred; $('f-remember').checked = s.remember;
   }
 
@@ -334,8 +327,8 @@
       if (/^https?:\/\/(localhost|127\.0\.0\.1)[:/]/.test(S.settings.api)) {
         throw new Error("Impossible de joindre ton Omeka S local. Vérifie que XAMPP est allumé (Apache et MySQL). Si c'est le cas, ton navigateur a peut-être bloqué l'accès : clique sur l'icône à gauche de l'adresse de la page et autorise l'accès au réseau local, puis recharge la page.");
       }
-      if (viaProxy()) throw new Error("Le relais de l'API (" + S.settings.apiProxy + ") ne répond pas. Vérifie son adresse dans « Réglages avancés ».");
-      throw new Error("Impossible de joindre Omeka S à l'adresse " + S.settings.api + ". Le serveur bloque cette page (CORS) : indique le relais de l'API dans « Réglages avancés ».");
+      if (viaProxy()) throw new Error("Le relais de l'API (" + S.settings.apiProxy + ") ne répond pas. Réessaie dans un instant.");
+      throw new Error("Impossible de joindre Omeka S à l'adresse " + S.settings.api + ". Vérifie l'adresse dans « Réglages avancés ».");
     }
     const text = await r.text();
     let data = null;

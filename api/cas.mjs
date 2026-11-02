@@ -11,7 +11,9 @@ const ALLOWED = /^(https:\/\/antoinejarnoux\.github\.io|http:\/\/(localhost|127\
 
 const xmlText = (xml, re) => {
   const m = xml.match(re);
-  return m ? m[1].replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').trim() : '';
+  return m ? m[1].replace(/<[^>]+>/g, '')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(n)).replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&').trim() : '';
 };
 
 export default {
@@ -40,7 +42,7 @@ export default {
     const user = xmlText(xml, /<cas:user>([\s\S]*?)<\/cas:user>/);
     if (user) return reply({ serviceResponse: { authenticationSuccess: { user } } });
     if (!/authenticationFailure/.test(xml)) return reply({ error: 'réponse CAS illisible' }, 502);
-    const code = (xml.match(/<cas:authenticationFailure[^>]*code="([^"]*)"/) || [])[1] || '';
+    const code = (xml.match(/<cas:authenticationFailure[^>]*code=["']([^"']*)["']/) || [])[1] || '';
     const description = xmlText(xml, /<cas:authenticationFailure[^>]*>([\s\S]*?)<\/cas:authenticationFailure>/) || 'ticket refusé';
     return reply({ serviceResponse: { authenticationFailure: { code, description } } });
   },

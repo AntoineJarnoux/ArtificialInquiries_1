@@ -223,8 +223,8 @@
   const DEFAULTS = {
     api: 'https://humanum-p8.fr/omk_artificialinquiries/api/',
     cas: 'https://cas.univ-paris8.fr/cas',
-    casProxy: 'http://localhost/ai1-cas/validate.php',  // relais PHP (cas/validate.php) : le CAS de Paris 8 refuse la vérification depuis le navigateur
-    apiProxy: '',  // relais PHP (relais/omk.php) : la base commune n'envoie pas d'en-tête CORS
+    casProxy: 'https://artificialinquiries1.vercel.app/api/cas',  // relais (api/cas.mjs) : le CAS de Paris 8 refuse la vérification depuis le navigateur
+    apiProxy: 'https://artificialinquiries1.vercel.app/api/omk',  // relais (api/omk.mjs) : la base commune n'envoie pas d'en-tête CORS
     google: '1046577410496-qjkqfq4448rv2iggia9tpkfve08sf40q.apps.googleusercontent.com',  // Client ID Google (public)
   };
   const PREFIX = 'artinq';
@@ -254,8 +254,11 @@
     set(k, v, session) { try { (session ? sessionStorage : localStorage).setItem('ai1.' + k, JSON.stringify(v)); } catch (e) {} },
     del(k) { try { localStorage.removeItem('ai1.' + k); sessionStorage.removeItem('ai1.' + k); } catch (e) {} },
   };
+  // Anciennes valeurs par défaut (Omeka et relais CAS en local) : remplacées par les nouvelles
+  const OLD_DEFAULTS = { api: 'http://localhost/omeka-s/api/', casProxy: 'http://localhost/ai1-cas/validate.php' };
   function loadSettings() {
     const pub = store.get('settings') || {};
+    if (!pub.v) for (const k in OLD_DEFAULTS) if (pub[k] === OLD_DEFAULTS[k]) delete pub[k];
     const key = store.get('key') || store.get('key', true) || {};
     return {
       api: pub.api || DEFAULTS.api, cas: pub.cas || DEFAULTS.cas, google: pub.google || DEFAULTS.google,
@@ -265,7 +268,7 @@
     };
   }
   function saveSettings(s) {
-    store.set('settings', { api: s.api, apiProxy: s.apiProxy, cas: s.cas, casProxy: s.casProxy, google: s.google, email: s.email });
+    store.set('settings', { v: 2, api: s.api, apiProxy: s.apiProxy, cas: s.cas, casProxy: s.casProxy, google: s.google, email: s.email });
     store.del('key');
     if (s.ident && s.cred) store.set('key', { ident: s.ident, cred: s.cred }, !s.remember);
   }

@@ -1,5 +1,5 @@
 {
-    "o:label": "artinq_Question",
+    "o:label": "Ex1 Question",
     "o:resource_template_property": [
         {
             "o:alternate_label": null,
@@ -13,7 +13,7 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "ordre",
             "label": "ordre"
@@ -30,13 +30,13 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "libelle",
-            "label": "libell\u00e9"
+            "label": "libellé"
         },
         {
-            "o:alternate_label": null,
+            "o:alternate_label": "type de question",
             "o:alternate_comment": null,
             "o:is_required": true,
             "o:is_private": false,
@@ -47,22 +47,22 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
-            "local_name": "typeQuestion",
-            "label": "type de question"
+            "local_name": "type",
+            "label": "type"
         }
     ],
     "o:resource_class": {
-        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
         "vocabulary_label": "Artificial Inquiries",
         "local_name": "Question",
         "label": "Question"
     },
     "o:title_property": {
-        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
         "vocabulary_label": "Artificial Inquiries",
         "local_name": "libelle",
-        "label": "libell\u00e9"
+        "label": "libellé"
     }
 }

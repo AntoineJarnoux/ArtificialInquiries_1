@@ -73,9 +73,21 @@ artinq:pseudo a rdf:Property ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
 
-artinq:inscritLe a rdf:Property ;
-    rdfs:label "inscrit le" ;
+artinq:dateInscription a rdf:Property ;
+    rdfs:label "date d'inscription" ;
     rdfs:comment "Date d'inscription du participant." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:fournisseur a rdf:Property ;
+    rdfs:label "fournisseur" ;
+    rdfs:comment "Service utilisé pour se connecter : omeka, github, google ou cas." ;
+    rdfs:domain o:Resource ;
+    vs:term_status "experimental" .
+
+artinq:identifiant a rdf:Property ;
+    rdfs:label "identifiant" ;
+    rdfs:comment "Identifiant du compte chez ce fournisseur (ex. AntoineJarnoux pour github)." ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
 
@@ -107,8 +119,8 @@ artinq:consigne a rdf:Property ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
 
-artinq:contientQuestion a rdf:Property ;
-    rdfs:label "contient la question" ;
+artinq:aPourQuestion a rdf:Property ;
+    rdfs:label "a pour question" ;
     rdfs:comment "Lien de l'exercice vers une de ses questions." ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
@@ -129,8 +141,8 @@ artinq:libelle a rdf:Property ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
 
-artinq:typeQuestion a rdf:Property ;
-    rdfs:label "type de question" ;
+artinq:type a rdf:Property ;
+    rdfs:label "type" ;
     rdfs:comment "DESSIN ou TEXTE." ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
@@ -139,8 +151,8 @@ artinq:typeQuestion a rdf:Property ;
 # PROPRIÉTÉS — Passation
 # ──────────────────────────────────────────────
 
-artinq:datePassation a rdf:Property ;
-    rdfs:label "date de passation" ;
+artinq:date a rdf:Property ;
+    rdfs:label "date" ;
     rdfs:comment "Date et heure de la passation." ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
@@ -163,8 +175,8 @@ artinq:porteSur a rdf:Property ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
 
-artinq:contientReponse a rdf:Property ;
-    rdfs:label "contient la réponse" ;
+artinq:aPourReponse a rdf:Property ;
+    rdfs:label "a pour réponse" ;
     rdfs:comment "Lien de la passation vers une de ses réponses." ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
@@ -179,14 +191,14 @@ artinq:repondA a rdf:Property ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
 
-artinq:modifieeLe a rdf:Property ;
-    rdfs:label "modifiée le" ;
+artinq:dateModification a rdf:Property ;
+    rdfs:label "date de modification" ;
     rdfs:comment "Date de dernière modification de la réponse." ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .
 
-artinq:composeDe a rdf:Property ;
-    rdfs:label "composé du trait" ;
+artinq:aPourTrait a rdf:Property ;
+    rdfs:label "a pour trait" ;
     rdfs:comment "Lien de la réponse dessin vers un de ses traits." ;
     rdfs:domain o:Resource ;
     vs:term_status "experimental" .

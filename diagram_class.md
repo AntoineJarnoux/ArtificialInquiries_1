@@ -1,6 +1,6 @@
 # Diagramme de classes — Exercice 1 « Draw It Like You See It »
 
-Modèle des données nécessaires pour gérer l'exercice : qui fait l'exercice, quand, et ce qu'il a dessiné et écrit.
+Modèle des données nécessaires pour gérer l'exercice : qui fait l'exercice, quand, et ce qu'il a dessiné et écrit. Les attributs et les liens utilisent les noms du vocabulaire commun `artinq`.
 
 ```mermaid
 classDiagram
@@ -8,8 +8,9 @@ classDiagram
 
     class Participant {
         +String pseudo
-        +DateTime inscritLe
-        +String compte
+        +DateTime dateInscription
+        +String fournisseur
+        +String identifiant
     }
 
     class Exercice {
@@ -39,7 +40,7 @@ classDiagram
 
     class Reponse {
         <<abstract>>
-        +DateTime modifieeLe
+        +DateTime dateModification
     }
 
     class ReponseDessin {
@@ -75,12 +76,12 @@ classDiagram
 
     Participant "1" --> "0..*" Passation : réalise
     Passation "0..*" --> "1" Exercice : porte sur
-    Exercice "1" *-- "1..*" Question : contient
-    Passation "1" *-- "1..*" Reponse : contient
+    Exercice "1" *-- "1..*" Question : a pour question
+    Passation "1" *-- "1..*" Reponse : a pour réponse
     Reponse "0..*" --> "1" Question : répond à
     Reponse <|-- ReponseDessin
     Reponse <|-- ReponseTexte
-    ReponseDessin "1" *-- "0..*" Trait : composé de
+    ReponseDessin "1" *-- "0..*" Trait : a pour trait
     Trait "1" *-- "1..*" Point : passe par
     Trait ..> Outil
     Question ..> TypeQuestion
@@ -88,7 +89,7 @@ classDiagram
 
 ## Lecture du diagramme
 
-- Un **Participant** réalise plusieurs **Passations** de l'exercice. C'est ce qui permet de refaire l'exercice à différents moments et de comparer. Son `compte` indique avec quel compte il s'est connecté (ex. `github:AntoineJarnoux`).
+- Un **Participant** réalise plusieurs **Passations** de l'exercice. C'est ce qui permet de refaire l'exercice à différents moments et de comparer. Son `fournisseur` (omeka, github, google ou cas) et son `identifiant` indiquent avec quel compte il s'est connecté (ex. `github` + `AntoineJarnoux`).
 - Un **Exercice** contient ses **Questions**. Pour l'exercice 1 il y en a trois (tableau ci-dessous). Le modèle reste valable pour d'autres exercices du vademecum.
 - Une **Passation** contient une **Réponse** par question. Une réponse est soit un **dessin**, soit un **texte** (héritage).
 - Un **dessin** est une suite de **Traits** ; un trait a un outil, une couleur, une épaisseur et une suite de **Points**. Garder les traits (et pas seulement l'image) permet d'annuler et de rejouer le dessin.

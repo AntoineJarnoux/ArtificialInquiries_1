@@ -1,5 +1,5 @@
 {
-    "o:label": "artinq_Trait",
+    "o:label": "Ex1 Trait",
     "o:resource_template_property": [
         {
             "o:alternate_label": "Titre du trait",
@@ -13,7 +13,7 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "http:\/\/purl.org\/dc\/terms\/",
+            "vocabulary_namespace_uri": "http://purl.org/dc/terms/",
             "vocabulary_label": "Dublin Core",
             "local_name": "title",
             "label": "Title"
@@ -30,7 +30,7 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "outil",
             "label": "outil"
@@ -47,7 +47,7 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "couleur",
             "label": "couleur"
@@ -64,10 +64,10 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "epaisseur",
-            "label": "\u00e9paisseur"
+            "label": "épaisseur"
         },
         {
             "o:alternate_label": null,
@@ -81,20 +81,20 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "points",
             "label": "points"
         }
     ],
     "o:resource_class": {
-        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
         "vocabulary_label": "Artificial Inquiries",
         "local_name": "Trait",
         "label": "Trait"
     },
     "o:title_property": {
-        "vocabulary_namespace_uri": "http:\/\/purl.org\/dc\/terms\/",
+        "vocabulary_namespace_uri": "http://purl.org/dc/terms/",
         "vocabulary_label": "Dublin Core",
         "local_name": "title",
         "label": "Title"

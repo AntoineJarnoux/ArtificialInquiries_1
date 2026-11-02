@@ -1,5 +1,5 @@
 {
-    "o:label": "artinq_Passation",
+    "o:label": "Ex1 Passation",
     "o:resource_template_property": [
         {
             "o:alternate_label": "Titre de la passation",
@@ -13,13 +13,13 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "http:\/\/purl.org\/dc\/terms\/",
+            "vocabulary_namespace_uri": "http://purl.org/dc/terms/",
             "vocabulary_label": "Dublin Core",
             "local_name": "title",
             "label": "Title"
         },
         {
-            "o:alternate_label": null,
+            "o:alternate_label": "date de passation",
             "o:alternate_comment": null,
             "o:is_required": true,
             "o:is_private": false,
@@ -30,10 +30,10 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
-            "local_name": "datePassation",
-            "label": "date de passation"
+            "local_name": "date",
+            "label": "date"
         },
         {
             "o:alternate_label": null,
@@ -47,7 +47,7 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "moment",
             "label": "moment"
@@ -64,10 +64,10 @@
                     "label": "Item"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "realiseePar",
-            "label": "r\u00e9alis\u00e9e par"
+            "label": "réalisée par"
         },
         {
             "o:alternate_label": null,
@@ -81,7 +81,7 @@
                     "label": "Item"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "porteSur",
             "label": "porte sur"
@@ -98,20 +98,20 @@
                     "label": "Item"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
-            "local_name": "contientReponse",
-            "label": "contient la r\u00e9ponse"
+            "local_name": "aPourReponse",
+            "label": "a pour réponse"
         }
     ],
     "o:resource_class": {
-        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
         "vocabulary_label": "Artificial Inquiries",
         "local_name": "Passation",
         "label": "Passation"
     },
     "o:title_property": {
-        "vocabulary_namespace_uri": "http:\/\/purl.org\/dc\/terms\/",
+        "vocabulary_namespace_uri": "http://purl.org/dc/terms/",
         "vocabulary_label": "Dublin Core",
         "local_name": "title",
         "label": "Title"

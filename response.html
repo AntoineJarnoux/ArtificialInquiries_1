@@ -8,204 +8,192 @@
   :root {
     --bg: #f3f4f7; --panel: #ffffff; --ink: #1e2430; --soft: #5c6577; --rule: #d9dde5;
     --accent: #2f55d4; --accent-ink: #ffffff; --ok: #1f7a4a; --err: #b3261e; --warn: #8a5a00;
-    --sheet: #fbfbfc; --chip: #eef1f6;
+    --sheet: #fbfbfc;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #151922; --panel: #1e2430; --ink: #e7e9ee; --soft: #9aa3b4; --rule: #333b4a;
       --accent: #8aa4ff; --accent-ink: #10131a; --ok: #6fcf97; --err: #ff8a80; --warn: #f2c25b;
-      --sheet: #fbfbfc; --chip: #262d3b;
+      --sheet: #fbfbfc;
       color-scheme: dark;
     }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
   a { color: var(--accent); }
   [hidden] { display: none !important; }
-  header.top {
-    background: var(--panel); border-bottom: 1px solid var(--rule);
-    padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between;
-  }
-  header.top h1 { margin: 0; font-size: 18px; }
-  header.top h1 small { display: block; font-size: 12px; font-weight: 400; color: var(--soft); }
-  .who { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+  header { background: var(--panel); border-bottom: 1px solid var(--rule); padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+  header h1 { margin: 0; font-size: 18px; }
+  .who { display: flex; align-items: center; gap: 10px; font-size: 14px; }
   .who img { width: 26px; height: 26px; border-radius: 50%; }
-  .chip { background: var(--chip); border-radius: 999px; padding: 2px 10px; font-size: 12px; color: var(--soft); }
-  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 64px; display: grid; gap: 18px; }
-  section.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; }
-  h2 { margin: 0 0 12px; font-size: 17px; }
-  h3 { margin: 0 0 8px; font-size: 15px; }
-  p { margin: 0 0 8px; }
-  .hint { font-size: 13px; color: var(--soft); }
-  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
-  @media (max-width: 700px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
-  label { display: grid; gap: 4px; font-size: 13px; color: var(--soft); }
-  label.full { grid-column: 1 / -1; }
-  label.check { display: flex; align-items: center; gap: 8px; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; }
+  h2 { margin: 0 0 6px; font-size: 19px; }
+  h3 { margin: 0 0 8px; font-size: 16px; }
+  p { margin: 0 0 10px; }
+  .hint { font-size: 14px; color: var(--soft); }
+  .fields { display: grid; gap: 10px; margin: 12px 0; }
+  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 640px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  label { display: grid; gap: 4px; font-size: 14px; color: var(--soft); }
+  label.check { display: flex; align-items: center; gap: 8px; color: var(--ink); }
   input[type=text], input[type=email], input[type=password], input[type=url], select, textarea {
-    font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 9px; width: 100%;
+    font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; width: 100%;
   }
   textarea { min-height: 90px; resize: vertical; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  button {
-    font: inherit; font-size: 14px; border-radius: 6px; padding: 7px 12px; cursor: pointer;
-    border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 34px;
-  }
+  button { font: inherit; font-size: 15px; border-radius: 6px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); }
   button.ghost { background: transparent; color: var(--accent); }
   button.danger { background: transparent; color: var(--err); border-color: var(--err); }
+  button.big { font-size: 17px; padding: 12px 20px; }
   button:disabled { opacity: .45; cursor: not-allowed; }
-  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--rule); margin-bottom: 14px; }
-  .tabs button { background: transparent; color: var(--soft); border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 8px 12px; }
-  .tabs button[aria-selected=true] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
-  #status { position: sticky; top: 0; z-index: 10; }
-  .msg { border-radius: 8px; padding: 10px 12px; font-size: 14px; border: 1px solid var(--rule); background: var(--panel); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  details { border-top: 1px solid var(--rule); padding-top: 12px; margin-top: 14px; }
+  summary { cursor: pointer; color: var(--accent); font-size: 15px; }
+  details .fields { margin-bottom: 0; }
+  .method { border: 1px solid var(--rule); border-radius: 8px; padding: 12px; margin-top: 10px; }
+  .msg { border-radius: 8px; padding: 10px 12px; font-size: 15px; border: 1px solid var(--rule); background: var(--panel); }
   .msg.ok { border-color: var(--ok); color: var(--ok); }
   .msg.err { border-color: var(--err); color: var(--err); }
   .msg.warn { border-color: var(--warn); color: var(--warn); }
-  .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 12px; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
-  .card { border: 1px solid var(--rule); border-radius: 10px; padding: 12px; display: grid; gap: 8px; background: var(--panel); }
-  .card .thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .card .thumbs figure { margin: 0; display: grid; gap: 4px; }
-  .card .thumbs img, .card .thumbs .noimg { width: 100%; aspect-ratio: 1; object-fit: contain; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; }
-  .card .thumbs .noimg { display: grid; place-items: center; font-size: 12px; color: #8a93a3; }
-  .card figcaption { font-size: 12px; color: var(--soft); }
-  .card .meta { font-size: 13px; color: var(--soft); }
-  .card blockquote { margin: 0; padding: 6px 10px; border-left: 3px solid var(--rule); font-size: 14px; white-space: pre-wrap; }
-  .empty { color: var(--soft); font-size: 14px; padding: 20px 0; text-align: center; }
-  .boards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  @media (max-width: 760px) { .boards { grid-template-columns: minmax(0, 1fr); } }
-  .board { display: grid; gap: 6px; min-width: 0; }
-  .board .square { position: relative; aspect-ratio: 1; background: var(--sheet); border: 1.5px solid #232a38; border-radius: 2px; touch-action: none; }
-  .board canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
-  .tools { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; margin-bottom: 12px; }
-  .tools .group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-  .tools button { padding: 5px 9px; min-height: 30px; font-size: 13px; background: transparent; color: var(--ink); border-color: var(--rule); }
+  .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 12px; }
+  .item { border: 1px solid var(--rule); border-radius: 10px; padding: 12px; display: grid; gap: 8px; }
+  .item .meta { font-size: 14px; color: var(--soft); }
+  .item .pics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .item .pics img, .item .pics .none { width: 100%; aspect-ratio: 1; object-fit: contain; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; }
+  .item .pics .none { display: grid; place-items: center; font-size: 12px; color: #8a93a3; }
+  .item blockquote { margin: 0; padding: 4px 10px; border-left: 3px solid var(--rule); white-space: pre-wrap; }
+  .empty { color: var(--soft); text-align: center; padding: 16px 0; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+  .tools button { padding: 6px 10px; font-size: 14px; background: transparent; color: var(--ink); border-color: var(--rule); }
   .tools button[aria-pressed=true] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .swatch { width: 26px; height: 26px; min-height: 0 !important; padding: 0 !important; border-radius: 50% !important; }
-  .confirm { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; }
-  footer { text-align: center; font-size: 12px; color: var(--soft); padding: 0 16px 24px; }
-  code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
+  .swatch { width: 30px; height: 30px; padding: 0 !important; border-radius: 50% !important; }
+  .boards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 700px) { .boards { grid-template-columns: minmax(0, 1fr); } }
+  .board { display: grid; gap: 6px; min-width: 0; }
+  .square { position: relative; aspect-ratio: 1; background: var(--sheet); border: 1.5px solid #232a38; border-radius: 2px; touch-action: none; }
+  .square canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
+  .board .row button { padding: 4px 10px; font-size: 14px; }
+  .confirm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; }
+  footer { text-align: center; font-size: 13px; color: var(--soft); padding: 0 16px 24px; }
 </style>
 </head>
 <body>
 
-<header class="top">
-  <h1>Draw It Like You See It<small>Artificial Inquiries — exercice 1 · données dans Omeka S</small></h1>
-  <div class="who">
-    <span id="who-none">Non connecté</span>
-    <span id="who-user" hidden><img id="who-avatar" alt="" hidden><span id="who-name"></span> <span class="chip" id="who-provider"></span></span>
-    <span class="chip" id="who-rights"></span>
-    <button class="ghost" id="btn-logout" hidden>Se déconnecter</button>
-    <button class="ghost" id="btn-settings">Paramètres</button>
+<header>
+  <h1>Exercice 1 — Draw It Like You See It</h1>
+  <div class="who" id="who" hidden>
+    <img id="who-avatar" alt="" hidden>
+    <span id="who-name"></span>
+    <button class="ghost" id="btn-logout">Se déconnecter</button>
   </div>
 </header>
 
 <main>
   <div id="status" aria-live="polite"></div>
 
-  <!-- Paramètres : serveur Omeka S et clé API (droits d'écriture) -->
-  <section class="panel" id="settings" hidden>
-    <h2>Paramètres</h2>
-    <div class="grid2">
-      <label class="full">Adresse de l'API Omeka S
-        <input type="url" id="set-api" placeholder="http://localhost/omeka-s/api/">
-      </label>
-      <label>key_identity
-        <input type="text" id="set-ident" autocomplete="off" spellcheck="false">
-      </label>
-      <label>key_credential
-        <input type="password" id="set-cred" autocomplete="off">
-      </label>
-      <label class="check full"><input type="checkbox" id="set-remember"> Mémoriser la clé sur cet ordinateur (sinon elle est oubliée à la fermeture de l'onglet)</label>
-      <label>Serveur CAS
-        <input type="url" id="set-cas" placeholder="https://cas.univ-paris8.fr/cas">
-      </label>
-      <label>Relais de validation CAS (vide = vérification directe)
-        <input type="url" id="set-casproxy" placeholder="http://localhost/ai1-cas/validate.php">
-      </label>
-      <label>Client ID Google
-        <input type="text" id="set-google" placeholder="xxxx.apps.googleusercontent.com" spellcheck="false">
-      </label>
-    </div>
-    <p class="hint">La clé API se crée dans Omeka S : Utilisateurs → ton compte → Modifier → onglet « Clés API ». Sans clé, la page fonctionne en lecture seule. La clé reste dans ce navigateur : elle n'est jamais envoyée ailleurs qu'à ton Omeka S.</p>
-    <div class="row">
-      <button id="btn-save-settings">Enregistrer et tester</button>
-      <button class="ghost" id="btn-forget-key">Oublier la clé</button>
-      <button class="ghost" id="btn-close-settings">Fermer</button>
-    </div>
-  </section>
+  <!-- ÉCRAN 1 : connexion -->
+  <section class="card" id="screen-login">
+    <h2>Connexion</h2>
+    <p class="hint">Tes dessins sont enregistrés dans ton Omeka S. Pour cela, la page a besoin de ta clé API (Omeka S → Utilisateurs → ton compte → Modifier → onglet « Clés API »).</p>
 
-  <!-- Connexion : identité du participant -->
-  <section class="panel" id="login" hidden>
-    <h2>Se connecter</h2>
-    <p class="hint">Ta connexion sert à savoir qui fait l'exercice : chaque passation est rattachée à ton compte (item <code>artinq:Participant</code>).</p>
-    <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-tab="omeka">Compte Omeka S</button>
-      <button role="tab" aria-selected="false" data-tab="github">GitHub</button>
-      <button role="tab" aria-selected="false" data-tab="google">Google</button>
-      <button role="tab" aria-selected="false" data-tab="cas">CAS (université)</button>
-    </div>
-
-    <div data-pane="omeka">
-      <p>Connexion locale avec ton compte Omeka S : ton email et ta clé API (dans les Paramètres).</p>
-      <div class="grid2">
-        <label>Email du compte Omeka S
-          <input type="email" id="login-email" autocomplete="username">
+    <div class="fields">
+      <label>Email de ton compte Omeka S
+        <input type="email" id="f-email" autocomplete="username">
+      </label>
+      <div class="two">
+        <label>key_identity
+          <input type="text" id="f-ident" autocomplete="off" spellcheck="false">
+        </label>
+        <label>key_credential
+          <input type="password" id="f-cred" autocomplete="off">
         </label>
       </div>
-      <div class="row" style="margin-top:10px"><button id="btn-login-omeka">Se connecter</button></div>
+      <label class="check"><input type="checkbox" id="f-remember"> Se souvenir de moi sur cet ordinateur</label>
     </div>
+    <button class="big" id="btn-login">Se connecter</button>
 
-    <div data-pane="github" hidden>
-      <p>Connexion avec ton compte GitHub, grâce à un jeton d'accès personnel.</p>
-      <ol class="hint">
-        <li>Crée un jeton sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> (aucune permission à cocher : il sert juste à lire ton profil public).</li>
-        <li>Colle-le ici. La page lit ton profil sur l'API GitHub puis oublie le jeton.</li>
-      </ol>
-      <div class="grid2">
-        <label>Jeton GitHub
-          <input type="password" id="login-github" autocomplete="off" spellcheck="false">
+    <details id="other-methods">
+      <summary>Se connecter avec GitHub, Google ou l'université (CAS)</summary>
+      <p class="hint" style="margin-top:10px">Ta clé Omeka S ci-dessus reste nécessaire pour enregistrer. Ces boutons servent à dire qui tu es.</p>
+
+      <div class="method">
+        <h3>GitHub</h3>
+        <p class="hint">Crée un jeton sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> (aucune case à cocher), puis colle-le ici. Il n'est pas gardé.</p>
+        <div class="row"><input type="password" id="f-github" placeholder="Jeton GitHub" style="max-width:340px" autocomplete="off"><button id="btn-github">Se connecter avec GitHub</button></div>
+      </div>
+
+      <div class="method">
+        <h3>Google</h3>
+        <div id="google-button"></div>
+        <p class="hint" id="google-hint"></p>
+      </div>
+
+      <div class="method">
+        <h3>Université Paris 8 (CAS)</h3>
+        <p class="hint">Tu vas sur la page de connexion de la fac, puis tu reviens ici.</p>
+        <button id="btn-cas">Se connecter avec l'université</button>
+      </div>
+    </details>
+
+    <details>
+      <summary>Réglages avancés</summary>
+      <div class="fields">
+        <label>Adresse de l'API Omeka S
+          <input type="url" id="f-api">
+        </label>
+        <label>Serveur CAS
+          <input type="url" id="f-cas">
+        </label>
+        <label>Relais de vérification CAS (vide = vérification directe)
+          <input type="url" id="f-casproxy">
+        </label>
+        <label>Client ID Google
+          <input type="text" id="f-google" placeholder="xxxx.apps.googleusercontent.com" spellcheck="false">
         </label>
       </div>
-      <div class="row" style="margin-top:10px"><button id="btn-login-github">Se connecter avec GitHub</button></div>
-    </div>
-
-    <div data-pane="google" hidden>
-      <p>Connexion avec ton compte Google (Google Identity Services).</p>
-      <div id="google-button"></div>
-      <p class="hint" id="google-hint"></p>
-    </div>
-
-    <div data-pane="cas" hidden>
-      <p>Connexion avec le CAS de l'université : tu es redirigé vers la page de connexion de l'université, puis renvoyé ici.</p>
-      <p class="hint">Serveur : <code id="cas-server"></code> (modifiable dans les Paramètres). Le serveur CAS doit accepter cette page comme service et autoriser la vérification du ticket depuis le navigateur.</p>
-      <div class="row"><button id="btn-login-cas">Se connecter avec CAS</button></div>
-    </div>
+    </details>
   </section>
 
-  <!-- Liste des passations (Read + accès Update / Delete) -->
-  <section class="panel" id="list">
-    <div class="toolbar">
-      <h2 style="margin:0">Passations</h2>
-      <div class="row">
-        <label class="check" style="font-size:14px;color:var(--ink)"><input type="checkbox" id="only-mine"> Seulement les miennes</label>
-        <button class="ghost" id="btn-refresh">Actualiser</button>
-        <button id="btn-new">Nouvelle passation</button>
+  <!-- ÉCRAN 2 : mes réponses -->
+  <section class="card" id="screen-home" hidden>
+    <h2>Mes réponses</h2>
+    <p class="hint">Chaque fois que tu fais l'exercice, tes 2 dessins et ta phrase sont enregistrés ensemble. Tu peux le refaire plus tard pour voir comment ta vision évolue.</p>
+    <button class="big" id="btn-new">Faire l'exercice</button>
+    <div class="list" id="list"></div>
+    <label class="check" style="margin-top:14px;font-size:14px"><input type="checkbox" id="f-all"> Voir aussi les réponses des autres</label>
+  </section>
+
+  <!-- ÉCRAN 3 : faire / modifier l'exercice -->
+  <section class="card" id="screen-edit" hidden>
+    <h2 id="edit-title">Faire l'exercice</h2>
+    <p id="consigne"></p>
+
+    <div class="tools" role="toolbar" aria-label="Outils de dessin">
+      <span id="colors" class="row"></span>
+      <button type="button" id="btn-eraser" aria-pressed="false">Gomme</button>
+    </div>
+
+    <div class="boards">
+      <div class="board" id="board-1">
+        <h3 class="q"></h3>
+        <div class="square"><canvas width="900" height="900"></canvas></div>
+        <div class="row"><button type="button" class="ghost" data-act="undo">Annuler le dernier trait</button><button type="button" class="ghost" data-act="clear">Tout effacer</button></div>
+      </div>
+      <div class="board" id="board-2">
+        <h3 class="q"></h3>
+        <div class="square"><canvas width="900" height="900"></canvas></div>
+        <div class="row"><button type="button" class="ghost" data-act="undo">Annuler le dernier trait</button><button type="button" class="ghost" data-act="clear">Tout effacer</button></div>
       </div>
     </div>
-    <div class="cards" id="cards"></div>
-  </section>
 
-  <!-- Formulaire de création / modification (Create + Update) -->
-  <section class="panel" id="editor" hidden>
-    <h2 id="editor-title">Nouvelle passation</h2>
-    <p class="hint" id="editor-consigne"></p>
-    <div class="grid2" style="margin-bottom:12px">
-      <label>Moment de la passation
-        <select id="ed-moment">
+    <div class="fields" style="margin-top:16px">
+      <label><span id="q3"></span>
+        <textarea id="f-texte"></textarea>
+      </label>
+      <label>Quand fais-tu l'exercice ?
+        <select id="f-moment">
           <option>Avant les autres exercices</option>
           <option>Après le bloc 02</option>
           <option>Après le bloc 03</option>
@@ -214,102 +202,85 @@
         </select>
       </label>
     </div>
-
-    <div class="tools" role="toolbar" aria-label="Outils de dessin">
-      <div class="group" id="tool-kind">
-        <button type="button" data-tool="CRAYON" aria-pressed="true">Crayon</button>
-        <button type="button" data-tool="FEUTRE" aria-pressed="false">Feutre</button>
-        <button type="button" data-tool="GOMME" aria-pressed="false">Gomme</button>
-      </div>
-      <div class="group" id="tool-color"></div>
-      <div class="group" id="tool-size"></div>
-    </div>
-
-    <div class="boards">
-      <div class="board" id="board-1">
-        <h3 class="q-label"></h3>
-        <div class="square"><canvas width="900" height="900"></canvas></div>
-        <div class="row"><button type="button" class="ghost" data-act="undo">Annuler</button><button type="button" class="ghost" data-act="clear">Effacer</button></div>
-      </div>
-      <div class="board" id="board-2">
-        <h3 class="q-label"></h3>
-        <div class="square"><canvas width="900" height="900"></canvas></div>
-        <div class="row"><button type="button" class="ghost" data-act="undo">Annuler</button><button type="button" class="ghost" data-act="clear">Effacer</button></div>
-      </div>
-    </div>
-
-    <label class="full" style="margin-top:14px"><span id="q3-label"></span>
-      <textarea id="ed-texte"></textarea>
-    </label>
-
-    <div class="row" style="margin-top:12px">
-      <button id="btn-save">Enregistrer</button>
+    <div class="row">
+      <button class="big" id="btn-save">Enregistrer</button>
       <button class="ghost" id="btn-cancel">Annuler</button>
-      <span class="hint" id="save-progress"></span>
+      <span class="hint" id="progress"></span>
     </div>
   </section>
 </main>
 
-<footer>Code : <a href="https://github.com/AntoineJarnoux/ArtificialInquiries_1">github.com/AntoineJarnoux/ArtificialInquiries_1</a> · API : <a href="https://omeka.org/s/docs/developer/api/">Omeka S REST API</a></footer>
+<footer><a href="https://github.com/AntoineJarnoux/ArtificialInquiries_1">Code sur GitHub</a> · données via l'<a href="https://omeka.org/s/docs/developer/api/">API Omeka S</a></footer>
 
 <script>
 (() => {
   'use strict';
 
-  // ────────────────────────────────────────────────────────────
-  // CONFIGURATION
-  // ────────────────────────────────────────────────────────────
+  // ── Réglages par défaut ───────────────────────────────────────
   const DEFAULTS = {
-    api: 'http://localhost/omeka-s/api/',
+    api: 'https://humanum-p8.fr/omk_artificialinquiries/api/',
     cas: 'https://cas.univ-paris8.fr/cas',
-    casProxy: 'http://localhost/ai1-cas/validate.php',   // relais PHP (cas/validate.php) : le CAS de Paris 8 refuse CORS
-    google: '',          // Client ID OAuth Google (public) — à créer dans Google Cloud Console
+    casProxy: 'http://localhost/ai1-cas/validate.php',  // relais PHP (cas/validate.php) : le CAS de Paris 8 refuse la vérification depuis le navigateur
+    google: '1046577410496-qjkqfq4448rv2iggia9tpkfve08sf40q.apps.googleusercontent.com',  // Client ID Google (public)
   };
   const PREFIX = 'artinq';
+  // Termes du vocabulaire commun artinq utilisés par cette page
+  const TERMS = ['pseudo', 'dateInscription', 'fournisseur', 'identifiant', 'numero', 'consigne', 'aPourQuestion',
+    'ordre', 'libelle', 'type', 'date', 'moment', 'realiseePar', 'porteSur', 'aPourReponse', 'repondA',
+    'dateModification', 'aPourTrait', 'texte', 'outil', 'couleur', 'epaisseur', 'points'];
+  const CLASSES = ['Participant', 'Exercice', 'Question', 'Passation', 'ReponseDessin', 'ReponseTexte', 'Trait'];
+  // Modèles de ressource de cet exercice dans la base commune (« Ex1 Participant », « Ex1 Passation »…)
+  const TPL = 'Ex1 ';
+  const WRITES = ['Participant', 'Passation', 'ReponseDessin', 'ReponseTexte', 'Trait'];
   const COLORS = ['#232a38', '#c0392b', '#2463eb', '#2e8b57', '#e0a100'];
-  const SIZES = [3, 7, 14];
+  const MOMENT_DEFAUT = 'Avant les autres exercices';
 
   const $ = id => document.getElementById(id);
-  const S = {                // état de l'application
-    settings: null,
-    meta: null,              // ids des propriétés, classes, modèles, exercice, questions
-    canWrite: false,
-    user: null,              // { provider, id, name, avatar }
-    participantId: null,
-    list: [],
-    editing: null,           // passation en cours de modification (détail) ou null
-    tool: { outil: 'CRAYON', couleur: COLORS[0], epaisseur: SIZES[1] },
+  const S = {
+    settings: null, meta: null, canWrite: false,
+    user: null, participantId: null,
+    list: [], editing: null,
+    tool: { outil: 'CRAYON', couleur: COLORS[0], epaisseur: 7 },
   };
 
-  // ────────────────────────────────────────────────────────────
-  // STOCKAGE LOCAL (préférences uniquement)
-  // ────────────────────────────────────────────────────────────
+  // ── Mémoire du navigateur ─────────────────────────────────────
   const store = {
     get(k, session) { try { const v = (session ? sessionStorage : localStorage).getItem('ai1.' + k); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
     set(k, v, session) { try { (session ? sessionStorage : localStorage).setItem('ai1.' + k, JSON.stringify(v)); } catch (e) {} },
     del(k) { try { localStorage.removeItem('ai1.' + k); sessionStorage.removeItem('ai1.' + k); } catch (e) {} },
   };
-
   function loadSettings() {
     const pub = store.get('settings') || {};
     const key = store.get('key') || store.get('key', true) || {};
     return {
       api: pub.api || DEFAULTS.api, cas: pub.cas || DEFAULTS.cas, google: pub.google || DEFAULTS.google,
       casProxy: pub.casProxy !== undefined ? pub.casProxy : DEFAULTS.casProxy,
-      ident: key.ident || '', cred: key.cred || '', remember: !!store.get('key'),
+      email: pub.email || '', ident: key.ident || '', cred: key.cred || '', remember: !!store.get('key'),
     };
   }
   function saveSettings(s) {
-    store.set('settings', { api: s.api, cas: s.cas, casProxy: s.casProxy, google: s.google });
+    store.set('settings', { api: s.api, cas: s.cas, casProxy: s.casProxy, google: s.google, email: s.email });
     store.del('key');
     if (s.ident && s.cred) store.set('key', { ident: s.ident, cred: s.cred }, !s.remember);
   }
+  function readForm() {
+    S.settings = {
+      api: $('f-api').value.trim() || DEFAULTS.api, cas: $('f-cas').value.trim() || DEFAULTS.cas,
+      casProxy: $('f-casproxy').value.trim(), google: $('f-google').value.trim(),
+      email: $('f-email').value.trim(), ident: $('f-ident').value.trim(), cred: $('f-cred').value.trim(),
+      remember: $('f-remember').checked,
+    };
+    saveSettings(S.settings);
+  }
+  function fillForm() {
+    const s = S.settings;
+    $('f-api').value = s.api; $('f-cas').value = s.cas; $('f-casproxy').value = s.casProxy; $('f-google').value = s.google;
+    $('f-email').value = s.email; $('f-ident').value = s.ident; $('f-cred').value = s.cred; $('f-remember').checked = s.remember;
+  }
 
-  // ────────────────────────────────────────────────────────────
-  // MESSAGES
-  // ────────────────────────────────────────────────────────────
+  // ── Messages ──────────────────────────────────────────────────
   let msgTimer;
-  function say(text, kind = 'ok', sticky = false) {
+  function say(text, kind = 'ok') {
     clearTimeout(msgTimer);
     const box = $('status');
     box.replaceChildren();
@@ -318,14 +289,11 @@
     d.className = 'msg ' + kind;
     d.textContent = text;
     box.append(d);
-    if (!sticky && kind === 'ok') msgTimer = setTimeout(() => box.replaceChildren(), 4000);
+    if (kind === 'ok') msgTimer = setTimeout(() => box.replaceChildren(), 4000);
   }
 
-  // ────────────────────────────────────────────────────────────
-  // API OMEKA S  (https://omeka.org/s/docs/developer/api/rest_api/)
-  // ────────────────────────────────────────────────────────────
-  function apiBase() { return S.settings.api.endsWith('/') ? S.settings.api : S.settings.api + '/'; }
-
+  // ── API Omeka S ───────────────────────────────────────────────
+  const apiBase = () => S.settings.api.endsWith('/') ? S.settings.api : S.settings.api + '/';
   function apiUrl(path, params = {}) {
     const u = new URL(path, apiBase());
     for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
@@ -335,17 +303,15 @@
     }
     return u;
   }
-
   function omekaError(data, status) {
     if (data && data.errors) {
       const flat = [];
-      const walk = v => { if (typeof v === 'string') flat.push(v); else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === 'object') Object.values(v).forEach(walk); };
+      const walk = v => { if (typeof v === 'string') flat.push(v); else if (v && typeof v === 'object') Object.values(v).forEach(walk); };
       walk(data.errors);
       return 'Omeka S : ' + flat.join(' · ');
     }
-    return 'Omeka S a répondu HTTP ' + status;
+    return 'Omeka S a répondu avec une erreur (' + status + ').';
   }
-
   async function api(path, { method = 'GET', params, json, form } = {}) {
     const opts = { method };
     if (json) { opts.headers = { 'Content-Type': 'application/json' }; opts.body = JSON.stringify(json); }
@@ -353,24 +319,24 @@
     let r;
     try { r = await fetch(apiUrl(path, params), opts); }
     catch (e) {
-      throw new Error("Omeka S ne répond pas sur " + apiBase() + " : vérifie qu'Apache et MySQL tournent (XAMPP), l'adresse de l'API, et que CORS est autorisé pour cette page.");
+      if (/^https?:\/\/(localhost|127\.0\.0\.1)[:/]/.test(S.settings.api)) {
+        throw new Error("Impossible de joindre ton Omeka S local. Vérifie que XAMPP est allumé (Apache et MySQL). Si c'est le cas, ton navigateur a peut-être bloqué l'accès : clique sur l'icône à gauche de l'adresse de la page et autorise l'accès au réseau local, puis recharge la page.");
+      }
+      throw new Error("Impossible de joindre Omeka S à l'adresse " + S.settings.api + ". Vérifie l'adresse dans « Réglages avancés ». Si elle est bonne, le serveur bloque cette page (CORS) : il doit autoriser " + location.origin + ".");
     }
     const text = await r.text();
     let data = null;
     if (text) {
       try { data = JSON.parse(text); }
-      catch (e) { throw new Error('Réponse inattendue (HTTP ' + r.status + ') : Omeka S est peut-être en erreur (MySQL arrêté ?).'); }
+      catch (e) { throw new Error("Omeka S est en erreur : sa base de données ne répond peut-être pas (en local : MySQL est-il allumé dans XAMPP ?)."); }
     }
     if (!r.ok || (data && data.errors)) throw new Error(omekaError(data, r.status));
     return data;
   }
 
-  // Lecture des valeurs d'un item
   const val = (item, term) => (item[term] && item[term][0] && item[term][0]['@value'] !== undefined) ? item[term][0]['@value'] : '';
   const links = (item, term) => (item[term] || []).filter(v => v.value_resource_id).map(v => v.value_resource_id);
   const linkTitle = (item, term) => (item[term] && item[term][0] && item[term][0].display_title) || '';
-
-  // Construction des valeurs
   function lit(term, v) {
     const pid = S.meta.P[term];
     if (!pid) throw new Error('Propriété ' + term + ' absente dans Omeka S');
@@ -382,12 +348,12 @@
     return { [term]: ids.map(id => ({ type: 'resource', property_id: pid, value_resource_id: id })) };
   }
   function newItem(cls, ...values) {
-    const rt = S.meta.RT[PREFIX + '_' + cls], c = S.meta.C[cls];
-    if (!rt || !c) throw new Error('Modèle ' + PREFIX + '_' + cls + ' ou classe ' + cls + ' absent(e) dans Omeka S');
+    const rt = S.meta.RT[TPL + cls], c = S.meta.C[cls];
+    if (!rt || !c) throw new Error('Modèle « ' + TPL + cls + ' » absent dans Omeka S');
     return Object.assign({ 'o:resource_template': { 'o:id': rt }, 'o:resource_class': { 'o:id': c } }, ...values);
   }
 
-  // CRUD
+  // Create / Update / Delete
   async function createItem(data, file) {
     if (!file) return api('items', { method: 'POST', json: data });
     data['o:media'] = [{ 'o:ingester': 'upload', 'file_index': '0' }];
@@ -397,10 +363,9 @@
     return api('items', { method: 'POST', form: fd });
   }
   async function updateItem(id, ...values) {
-    // Omeka S remplace toutes les valeurs : on relit l'item complet, on change les propriétés voulues, on renvoie tout.
-    const it = await api('items/' + id);
+    const it = await api('items/' + id);   // Omeka S remplace toutes les valeurs : on renvoie l'item complet
     Object.assign(it, ...values);
-    delete it['o:media'];      // sans cette clé, Omeka garde les médias existants
+    delete it['o:media'];                  // sans cette clé, les images existantes sont gardées
     return api('items/' + id, { method: 'PUT', json: it });
   }
   const deleteItem = id => api('items/' + id, { method: 'DELETE' });
@@ -412,145 +377,134 @@
   }
   const deleteMedia = id => api('media/' + id, { method: 'DELETE' });
 
-  // ────────────────────────────────────────────────────────────
-  // MÉTADONNÉES : vocabulaire artinq, modèles, exercice 1
-  // ────────────────────────────────────────────────────────────
+  // ── Vocabulaire, modèles et exercice 1 dans Omeka S ──────────
   async function loadMeta() {
-    const [pa, pd, pf, cls, rts] = await Promise.all([
+    const [pa, pd, cls, rts] = await Promise.all([
       api('properties', { params: { vocabulary_prefix: PREFIX, per_page: 500 } }),
       api('properties', { params: { vocabulary_prefix: 'dcterms', per_page: 500 } }),
-      api('properties', { params: { term: 'foaf:accountName' } }),
       api('resource_classes', { params: { vocabulary_prefix: PREFIX, per_page: 500 } }),
       api('resource_templates', { params: { per_page: 500 } }),
     ]);
     const M = { P: {}, C: {}, RT: {} };
-    [...pa, ...pd, ...pf].forEach(p => M.P[p['o:term']] = p['o:id']);
+    [...pa, ...pd].forEach(p => M.P[p['o:term']] = p['o:id']);
     cls.forEach(c => M.C[c['o:local_name']] = c['o:id']);
     rts.forEach(r => M.RT[r['o:label']] = r['o:id']);
-    if (!M.P[PREFIX + ':pseudo']) throw new Error('Le vocabulaire « ' + PREFIX + ' » est absent de cet Omeka S : importe artificial_inquiries.ttl.');
-    if (!M.RT[PREFIX + '_Passation']) throw new Error('Les modèles de ressource ' + PREFIX + '_* sont absents : importe le dossier resource-template/.');
+    const noP = TERMS.filter(t => !M.P[PREFIX + ':' + t]);
+    if (noP.length) throw new Error('Propriétés absentes du vocabulaire « ' + PREFIX + ' » de cet Omeka S : ' + noP.join(', ') + '.');
+    const noC = CLASSES.filter(c => !M.C[c]);
+    if (noC.length) throw new Error('Classes absentes du vocabulaire « ' + PREFIX + ' » de cet Omeka S : ' + noC.join(', ') + '.');
+    const noRT = WRITES.filter(c => !M.RT[TPL + c]);
+    if (noRT.length) throw new Error('Modèles de ressource absents de cet Omeka S : ' + noRT.map(c => '« ' + TPL + c + ' »').join(', ') + ' (à importer depuis le dossier resource-template/).');
     S.meta = M;
-
-    const ex = await api('items', { params: {
-      resource_template_id: M.RT[PREFIX + '_Exercice'],
+    // L'exercice 1 : item de classe Exercice avec numéro 1 (sinon titre « Exercice 1 »)
+    let ex = await api('items', { params: {
+      resource_class_id: M.C.Exercice,
       'property[0][property]': M.P[PREFIX + ':numero'], 'property[0][type]': 'eq', 'property[0][text]': '1',
     } });
-    if (!ex.length) throw new Error("L'item Exercice n°1 est introuvable dans Omeka S.");
-    M.exercice = ex[0];
-    const qs = await Promise.all(links(ex[0], PREFIX + ':contientQuestion').map(id => api('items/' + id)));
+    if (!ex.length) ex = await api('items', { params: {
+      resource_class_id: M.C.Exercice,
+      'property[0][property]': M.P['dcterms:title'], 'property[0][type]': 'eq', 'property[0][text]': 'Exercice 1',
+    } });
+    if (!ex.length) throw new Error("L'exercice 1 est introuvable dans Omeka S (item de classe Exercice, numéro 1).");
+    M.exercice = ex.find(e => links(e, PREFIX + ':aPourQuestion').length) || ex[0];
+    const qIds = links(M.exercice, PREFIX + ':aPourQuestion');
+    if (!qIds.length) throw new Error("L'item « Exercice 1 » n'a pas encore ses questions : ajoute-lui les 3 questions avec la propriété « a pour question ».");
+    const qs = await Promise.all(qIds.map(id => api('items/' + id)));
     qs.sort((a, b) => Number(val(a, PREFIX + ':ordre')) - Number(val(b, PREFIX + ':ordre')));
-    M.questions = qs.map(q => ({ id: q['o:id'], libelle: val(q, PREFIX + ':libelle'), type: val(q, PREFIX + ':typeQuestion') }));
+    M.questions = qs.map(q => ({ id: q['o:id'], libelle: val(q, PREFIX + ':libelle'), type: val(q, PREFIX + ':type') }));
     M.qDessin = M.questions.filter(q => q.type === 'DESSIN');
     M.qTexte = M.questions.find(q => q.type === 'TEXTE');
-    if (M.qDessin.length < 2 || !M.qTexte) throw new Error("L'exercice 1 doit avoir 2 questions DESSIN et 1 question TEXTE dans Omeka S.");
+    if (M.qDessin.length < 2 || !M.qTexte) throw new Error("L'exercice 1 doit avoir 2 questions DESSIN et 1 question TEXTE.");
   }
 
-  async function checkKey() {
-    S.canWrite = false;
-    if (!S.settings.ident || !S.settings.cred) return;
-    try {
-      const users = await api('users', { params: { per_page: 1 } });
-      S.canWrite = Array.isArray(users);
-    } catch (e) {
-      say('La clé API est refusée par Omeka S : vérifie key_identity et key_credential dans les Paramètres.', 'err', true);
-    }
+  // Vérifie la connexion à Omeka S et la clé API
+  async function connect() {
+    if (!S.settings.ident || !S.settings.cred) throw new Error('Remplis key_identity et key_credential.');
+    await loadMeta();
+    try { await api('users', { params: { per_page: 1 } }); S.canWrite = true; }
+    catch (e) { S.canWrite = false; throw new Error('Ta clé API est refusée par Omeka S : vérifie key_identity et key_credential.'); }
   }
 
-  // ────────────────────────────────────────────────────────────
-  // AUTHENTIFICATION
-  // ────────────────────────────────────────────────────────────
+  // ── Connexion (authentification) ─────────────────────────────
   async function signIn(user) {
     S.user = user;
     store.set('user', user, true);
     await attachParticipant();
-    renderWho();
-    $('login').hidden = true;
-    say('Connecté : ' + user.name + ' (' + providerLabel(user.provider) + ')');
-    await refreshList();
+    showHome();
+    say('Bonjour ' + user.name + ' !');
   }
-
   function signOut() {
     S.user = null; S.participantId = null;
     store.del('user');
-    if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
-    renderWho();
-    closeEditor();
-    $('login').hidden = false;
-    refreshList();
+    try { if (window.google && google.accounts) google.accounts.id.disableAutoSelect(); } catch (e) {}
+    showLogin();
   }
-
-  const providerLabel = p => ({ omeka: 'Omeka S', github: 'GitHub', google: 'Google', cas: 'CAS' }[p] || p);
 
   // 1) Local : compte Omeka S (email + clé API)
   async function loginOmeka() {
-    say('');
-    const email = $('login-email').value.trim();
-    if (!email) return say("Indique l'email de ton compte Omeka S.", 'warn');
-    if (!S.settings.ident || !S.settings.cred) { openSettings(); return say("Ajoute d'abord ta clé API dans les Paramètres.", 'warn'); }
-    let users;
-    try { users = await api('users', { params: { email } }); }
-    catch (e) { return say('Connexion refusée : clé API invalide. ' + e.message, 'err'); }
-    if (!users.length) return say('Aucun compte Omeka S avec cet email pour cette clé.', 'err');
+    readForm();
+    if (!S.settings.email) throw new Error("Indique l'email de ton compte Omeka S.");
+    await connect();
+    const users = await api('users', { params: { email: S.settings.email } });
+    if (!users.length) throw new Error('Aucun compte Omeka S avec cet email.');
     await signIn({ provider: 'omeka', id: String(users[0]['o:id']), name: users[0]['o:name'], role: users[0]['o:role'] });
   }
 
-  // 2) GitHub : jeton d'accès personnel → profil via l'API GitHub (CORS autorisé par GitHub)
+  // 2) GitHub : jeton personnel → profil public (l'API GitHub accepte les appels du navigateur)
   async function loginGithub() {
-    say('');
-    const token = $('login-github').value.trim();
-    if (!token) return say('Colle ton jeton GitHub.', 'warn');
+    readForm();
+    const token = $('f-github').value.trim();
+    if (!token) throw new Error('Colle ton jeton GitHub.');
+    await connect();
     let r;
     try { r = await fetch('https://api.github.com/user', { headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' } }); }
-    catch (e) { return say("Impossible de joindre l'API GitHub.", 'err'); }
-    $('login-github').value = '';
-    if (!r.ok) return say('GitHub refuse ce jeton (HTTP ' + r.status + ').', 'err');
+    catch (e) { throw new Error("Impossible de joindre GitHub."); }
+    $('f-github').value = '';
+    if (!r.ok) throw new Error('GitHub refuse ce jeton.');
     const g = await r.json();
     await signIn({ provider: 'github', id: g.login, name: g.name || g.login, avatar: g.avatar_url });
   }
 
-  // 3) Google : Google Identity Services (jeton d'identité JWT)
+  // 3) Google : Google Identity Services
   let gisLoaded = false;
   function initGoogle() {
-    const cid = S.settings.google;
-    const hint = $('google-hint');
+    const cid = S.settings.google, hint = $('google-hint');
     $('google-button').replaceChildren();
-    if (!cid) {
-      hint.textContent = "Il faut un Client ID Google (gratuit) : Google Cloud Console → API et services → Identifiants → ID client OAuth « Application Web », avec l'origine autorisée de cette page. Colle-le ensuite dans les Paramètres.";
-      return;
-    }
+    if (!cid) { hint.textContent = "Pas encore disponible : il faut un Client ID Google (à mettre dans « Réglages avancés »)."; return; }
     hint.textContent = '';
     const render = () => {
       try {
         google.accounts.id.initialize({ client_id: cid, callback: onGoogleCredential });
         google.accounts.id.renderButton($('google-button'), { theme: 'outline', size: 'large', text: 'signin_with', locale: 'fr' });
-      } catch (e) { hint.textContent = 'Google Identity Services : ' + e.message; }
+      } catch (e) { hint.textContent = 'Google : ' + e.message; }
     };
     if (gisLoaded) return render();
     const s = document.createElement('script');
-    s.src = 'https://accounts.google.com/gsi/client';
-    s.async = true;
+    s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
     s.onload = () => { gisLoaded = true; render(); };
-    s.onerror = () => { hint.textContent = 'Impossible de charger le script de connexion Google.'; };
+    s.onerror = () => { hint.textContent = 'Impossible de charger la connexion Google.'; };
     document.head.append(s);
   }
   function decodeJwt(token) {
-    const part = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-    const bin = atob(part);
-    const json = decodeURIComponent([...bin].map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join(''));
-    return JSON.parse(json);
+    const bin = atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(decodeURIComponent([...bin].map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('')));
   }
   async function onGoogleCredential(resp) {
     try {
+      readForm();
       const p = decodeJwt(resp.credential);
       if (p.aud !== S.settings.google) throw new Error('jeton émis pour une autre application');
       if (p.exp * 1000 < Date.now()) throw new Error('jeton expiré');
+      await connect();
       await signIn({ provider: 'google', id: p.sub, name: p.name || p.email, avatar: p.picture });
     } catch (e) { say('Connexion Google impossible : ' + e.message, 'err'); }
   }
 
-  // 4) CAS : redirection vers le serveur CAS puis validation du ticket (protocole CAS 3)
+  // 4) CAS : page de connexion de l'université, puis vérification du ticket par le relais
   const serviceUrl = () => location.origin + location.pathname;
   function loginCas() {
+    readForm();
+    if (!S.settings.ident || !S.settings.cred) throw new Error("Remplis d'abord ta clé Omeka S (key_identity et key_credential).");
     const base = S.settings.cas.replace(/\/+$/, '');
     store.set('casPending', base, true);
     location.href = base + '/login?service=' + encodeURIComponent(serviceUrl());
@@ -559,16 +513,14 @@
     const base = store.get('casPending', true) || S.settings.cas.replace(/\/+$/, '');
     store.del('casPending');
     history.replaceState(null, '', serviceUrl());
-    // Un ticket CAS ne sert qu'une fois : on passe par le relais s'il est configuré, sinon on interroge le CAS directement.
+    // Un ticket ne sert qu'une fois : on passe par le relais s'il existe, sinon on interroge le CAS directement
     const q = 'service=' + encodeURIComponent(serviceUrl()) + '&ticket=' + encodeURIComponent(ticket);
     const proxy = S.settings.casProxy;
     const target = proxy ? proxy + (proxy.includes('?') ? '&' : '?') + q : base + '/p3/serviceValidate?format=JSON&' + q;
     let r;
     try { r = await fetch(target); }
     catch (e) {
-      throw new Error(proxy
-        ? "le relais de validation CAS ne répond pas (" + proxy + ") : vérifie qu'Apache tourne et que cas/validate.php est installé."
-        : "le serveur CAS a bien renvoyé un ticket, mais il interdit au navigateur de le vérifier (CORS). Configure le relais de validation dans les Paramètres.");
+      throw new Error(proxy ? "le relais de vérification ne répond pas (XAMPP est-il allumé ?)." : "le serveur CAS refuse la vérification depuis le navigateur : il faut le relais.");
     }
     const text = (await r.text()).trim();
     let user = null, failure = null;
@@ -584,37 +536,35 @@
       else failure = ((doc.getElementsByTagNameNS('*', 'authenticationFailure')[0] || {}).textContent || 'ticket refusé').trim();
     }
     if (!user) throw new Error(failure);
+    await connect();
     await signIn({ provider: 'cas', id: user, name: user });
   }
 
-  // Participant Omeka correspondant à l'identité (foaf:accountName = fournisseur:identifiant)
+  // Le compte devient un item Participant (artinq:fournisseur + artinq:identifiant)
   async function attachParticipant() {
     S.participantId = null;
-    if (!S.user) return;
-    const account = S.user.provider + ':' + S.user.id;
     const found = await api('items', { params: {
-      resource_template_id: S.meta.RT[PREFIX + '_Participant'],
-      'property[0][property]': S.meta.P['foaf:accountName'], 'property[0][type]': 'eq', 'property[0][text]': account,
+      resource_template_id: S.meta.RT[TPL + 'Participant'],
+      'property[0][property]': S.meta.P[PREFIX + ':identifiant'], 'property[0][type]': 'eq', 'property[0][text]': String(S.user.id),
+      'property[1][joiner]': 'and',
+      'property[1][property]': S.meta.P[PREFIX + ':fournisseur'], 'property[1][type]': 'eq', 'property[1][text]': S.user.provider,
     } });
     if (found.length) { S.participantId = found[0]['o:id']; return; }
-    if (!S.canWrite) return;
     const p = await createItem(newItem('Participant',
-      lit(PREFIX + ':pseudo', S.user.name), lit(PREFIX + ':inscritLe', today()), lit('foaf:accountName', account)));
+      lit(PREFIX + ':pseudo', S.user.name), lit(PREFIX + ':dateInscription', today()),
+      lit(PREFIX + ':fournisseur', S.user.provider), lit(PREFIX + ':identifiant', S.user.id)));
     S.participantId = p['o:id'];
   }
 
-  // ────────────────────────────────────────────────────────────
-  // LECTURE DES PASSATIONS (Read)
-  // ────────────────────────────────────────────────────────────
-  async function loadPassation(p) {
+  // ── Lecture des réponses (Read) ───────────────────────────────
+  async function loadOne(p) {
     const P = PREFIX;
     const d = {
-      id: p['o:id'], item: p, title: p['o:title'],
-      date: val(p, P + ':datePassation'), moment: val(p, P + ':moment'),
+      id: p['o:id'], date: val(p, P + ':date'), moment: val(p, P + ':moment'),
       participantId: links(p, P + ':realiseePar')[0], participantName: linkTitle(p, P + ':realiseePar'),
       dessins: {}, texte: null,
     };
-    const reps = await Promise.all(links(p, P + ':contientReponse').map(id => api('items/' + id).catch(() => null)));
+    const reps = await Promise.all(links(p, P + ':aPourReponse').map(id => api('items/' + id).catch(() => null)));
     for (const r of reps.filter(Boolean)) {
       const q = links(r, P + ':repondA')[0];
       const cls = r['o:resource_class'] && r['o:resource_class']['o:id'];
@@ -625,7 +575,7 @@
           const m = await api('media/' + mid).catch(() => null);
           if (m) img = (m['o:thumbnail_urls'] && (m['o:thumbnail_urls'].large || m['o:thumbnail_urls'].medium)) || m['o:original_url'] || '';
         }
-        d.dessins[q] = { item: r, mediaId: mid, img, traitIds: links(r, P + ':composeDe') };
+        d.dessins[q] = { item: r, mediaId: mid, img, traitIds: links(r, P + ':aPourTrait') };
       } else if (cls === S.meta.C.ReponseTexte) {
         d.texte = { item: r, value: val(r, P + ':texte') };
       }
@@ -634,79 +584,64 @@
   }
 
   async function refreshList() {
-    const cards = $('cards');
-    if (!S.meta) { cards.replaceChildren(); return; }
-    const mine = $('only-mine').checked;
-    if (mine && !S.participantId) { S.list = []; return renderList(); }
-    const params = { resource_template_id: S.meta.RT[PREFIX + '_Passation'], sort_by: 'created', sort_order: 'desc', per_page: 50 };
-    if (mine) Object.assign(params, { 'property[0][property]': S.meta.P[PREFIX + ':realiseePar'], 'property[0][type]': 'res', 'property[0][text]': S.participantId });
+    const all = $('f-all').checked;
+    const params = { resource_template_id: S.meta.RT[TPL + 'Passation'], sort_by: 'created', sort_order: 'desc', per_page: 50 };
+    if (!all) Object.assign(params, { 'property[0][property]': S.meta.P[PREFIX + ':realiseePar'], 'property[0][type]': 'res', 'property[0][text]': S.participantId });
     try {
       const items = await api('items', { params });
-      S.list = await Promise.all(items.map(loadPassation));
+      S.list = await Promise.all(items.map(loadOne));
       renderList();
-    } catch (e) { say(e.message, 'err', true); }
+    } catch (e) { say(e.message, 'err'); }
   }
 
-  const canEdit = d => S.canWrite && S.user && (d.participantId === S.participantId || (S.user.provider === 'omeka' && S.user.role === 'global_admin'));
+  const isMine = d => d.participantId === S.participantId;
 
   function renderList() {
-    const cards = $('cards');
-    cards.replaceChildren();
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    const list = $('list');
+    list.replaceChildren();
     if (!S.list.length) {
-      const e = document.createElement('p');
-      e.className = 'empty';
-      e.textContent = $('only-mine').checked ? "Tu n'as pas encore de passation." : 'Aucune passation enregistrée.';
-      cards.append(e);
+      list.append(el('p', 'empty', $('f-all').checked ? "Personne n'a encore fait l'exercice." : "Tu n'as pas encore fait l'exercice."));
       return;
     }
-    for (const d of S.list) cards.append(renderCard(d));
-  }
-
-  function renderCard(d) {
-    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-    const card = el('article', 'card');
-    card.append(el('h3', null, d.participantName || 'Participant inconnu'));
-    card.append(el('div', 'meta', [formatDate(d.date), d.moment].filter(Boolean).join(' · ')));
-    const thumbs = el('div', 'thumbs');
-    S.meta.qDessin.forEach(q => {
-      const f = el('figure');
-      const ds = d.dessins[q.id];
-      if (ds && ds.img) { const img = el('img'); img.src = ds.img; img.alt = 'Dessin : ' + q.libelle; img.loading = 'lazy'; f.append(img); }
-      else f.append(el('div', 'noimg', 'pas de dessin'));
-      f.append(el('figcaption', null, q.libelle));
-      thumbs.append(f);
-    });
-    card.append(thumbs);
-    if (d.texte && d.texte.value) card.append(el('blockquote', null, d.texte.value));
-    if (canEdit(d)) {
-      const row = el('div', 'row');
-      const bEdit = el('button', 'ghost', 'Modifier');
-      bEdit.onclick = () => openEditor(d);
-      const bDel = el('button', 'danger', 'Supprimer');
-      bDel.onclick = () => {
-        const c = el('div', 'confirm');
-        c.append(document.createTextNode('Supprimer cette passation et ses réponses ?'));
-        const yes = el('button', 'danger', 'Oui, supprimer'), no = el('button', 'ghost', 'Garder');
-        yes.onclick = () => removePassation(d, yes);
-        no.onclick = () => c.replaceWith(row);
-        c.append(yes, no);
-        row.replaceWith(c);
-      };
-      row.append(bEdit, bDel);
-      card.append(row);
+    for (const d of S.list) {
+      const card = el('article', 'item');
+      card.append(el('strong', null, formatDate(d.date) + (isMine(d) ? '' : ' — ' + (d.participantName || '?'))));
+      if (d.moment) card.append(el('span', 'meta', d.moment));
+      const pics = el('div', 'pics');
+      S.meta.qDessin.forEach(q => {
+        const ds = d.dessins[q.id];
+        if (ds && ds.img) { const i = el('img'); i.src = ds.img; i.alt = q.libelle; i.title = q.libelle; i.loading = 'lazy'; pics.append(i); }
+        else pics.append(el('div', 'none', 'pas de dessin'));
+      });
+      card.append(pics);
+      if (d.texte && d.texte.value) card.append(el('blockquote', null, d.texte.value));
+      if (isMine(d)) {
+        const row = el('div', 'row');
+        const bEdit = el('button', 'ghost', 'Modifier');
+        bEdit.onclick = () => openEditor(d);
+        const bDel = el('button', 'danger', 'Supprimer');
+        bDel.onclick = () => {
+          const c = el('div', 'confirm', 'Supprimer cette réponse ? ');
+          const yes = el('button', 'danger', 'Oui'), no = el('button', 'ghost', 'Non');
+          yes.onclick = () => removeOne(d, yes);
+          no.onclick = () => c.replaceWith(row);
+          c.append(yes, no);
+          row.replaceWith(c);
+        };
+        row.append(bEdit, bDel);
+        card.append(row);
+      }
+      list.append(card);
     }
-    return card;
   }
 
-  // ────────────────────────────────────────────────────────────
-  // DESSIN
-  // ────────────────────────────────────────────────────────────
+  // ── Dessin ────────────────────────────────────────────────────
   function createBoard(root) {
     const canvas = root.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     const b = { strokes: [], dirty: false };
     let cur = null;
-
     function drawStroke(c, s) {
       const pts = s.points;
       if (!pts.length) return;
@@ -720,9 +655,7 @@
       if (pts.length === 1) { c.arc(pts[0][0], pts[0][1], w / 2, 0, Math.PI * 2); c.fill(); }
       else {
         c.moveTo(pts[0][0], pts[0][1]);
-        for (let i = 1; i < pts.length - 1; i++) {
-          c.quadraticCurveTo(pts[i][0], pts[i][1], (pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2);
-        }
+        for (let i = 1; i < pts.length - 1; i++) c.quadraticCurveTo(pts[i][0], pts[i][1], (pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2);
         const last = pts[pts.length - 1];
         c.lineTo(last[0], last[1]); c.stroke();
       }
@@ -737,7 +670,6 @@
       o.drawImage(canvas, 0, 0);
       out.toBlob(blob => res(new File([blob], name, { type: 'image/png' })), 'image/png');
     });
-
     const pos = e => {
       const r = canvas.getBoundingClientRect();
       return [Math.round((e.clientX - r.left) * 900 / r.width * 10) / 10, Math.round((e.clientY - r.top) * 900 / r.height * 10) / 10];
@@ -763,57 +695,44 @@
     root.querySelector('[data-act=clear]').onclick = () => { if (b.strokes.length) { b.strokes = []; b.dirty = true; b.render(); } };
     return b;
   }
-
   const boards = [createBoard($('board-1')), createBoard($('board-2'))];
 
   function setupTools() {
-    $('tool-kind').querySelectorAll('button').forEach(btn => btn.onclick = () => {
-      S.tool.outil = btn.dataset.tool;
-      $('tool-kind').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === btn)));
-    });
+    const eraser = $('btn-eraser');
+    const pressColor = btn => $('colors').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === btn)));
     COLORS.forEach((c, i) => {
       const btn = document.createElement('button');
       btn.type = 'button'; btn.className = 'swatch'; btn.style.background = c;
       btn.setAttribute('aria-label', 'Couleur ' + (i + 1)); btn.setAttribute('aria-pressed', String(i === 0));
-      btn.onclick = () => {
-        S.tool.couleur = c;
-        if (S.tool.outil === 'GOMME') $('tool-kind').querySelector('[data-tool=CRAYON]').click();
-        $('tool-color').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === btn)));
-      };
-      $('tool-color').append(btn);
+      btn.onclick = () => { S.tool.outil = 'CRAYON'; S.tool.couleur = c; eraser.setAttribute('aria-pressed', 'false'); pressColor(btn); };
+      $('colors').append(btn);
     });
-    SIZES.forEach((s, i) => {
-      const btn = document.createElement('button');
-      btn.type = 'button'; btn.textContent = ['Fin', 'Moyen', 'Épais'][i];
-      btn.setAttribute('aria-pressed', String(s === S.tool.epaisseur));
-      btn.onclick = () => { S.tool.epaisseur = s; $('tool-size').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === btn))); };
-      $('tool-size').append(btn);
-    });
+    eraser.onclick = () => {
+      const on = S.tool.outil !== 'GOMME';
+      S.tool.outil = on ? 'GOMME' : 'CRAYON';
+      eraser.setAttribute('aria-pressed', String(on));
+      if (on) pressColor(null);
+      else pressColor($('colors').querySelector(`button[aria-label="Couleur ${COLORS.indexOf(S.tool.couleur) + 1}"]`));
+    };
   }
 
-  // ────────────────────────────────────────────────────────────
-  // CRÉATION / MODIFICATION / SUPPRESSION
-  // ────────────────────────────────────────────────────────────
+  // ── Faire / modifier / supprimer (Create, Update, Delete) ────
   async function openEditor(d) {
-    if (!S.user) { $('login').hidden = false; return say('Connecte-toi pour faire l\'exercice.', 'warn'); }
-    if (!S.canWrite) { openSettings(); return say("Ajoute la clé API Omeka S dans les Paramètres pour pouvoir enregistrer.", 'warn'); }
-    if (!S.participantId) await attachParticipant();
     S.editing = d || null;
-    $('editor-title').textContent = d ? 'Modifier la passation' : 'Nouvelle passation';
-    $('editor-consigne').textContent = val(S.meta.exercice, PREFIX + ':consigne');
-    document.querySelectorAll('.board .q-label').forEach((h, i) => h.textContent = S.meta.qDessin[i].libelle);
-    $('q3-label').textContent = S.meta.qTexte.libelle;
-    $('ed-moment').value = d ? d.moment : 'Avant les autres exercices';
-    if (d && d.moment && $('ed-moment').value !== d.moment) {
-      const o = document.createElement('option'); o.textContent = d.moment; $('ed-moment').append(o); $('ed-moment').value = d.moment;
-    }
-    $('ed-texte').value = d && d.texte ? d.texte.value : '';
+    if (S.tool.outil === 'GOMME') $('btn-eraser').click();   // on repart au crayon
+    $('edit-title').textContent = d ? 'Modifier ma réponse' : "Faire l'exercice";
+    $('consigne').textContent = val(S.meta.exercice, PREFIX + ':consigne');
+    document.querySelectorAll('.board .q').forEach((h, i) => h.textContent = S.meta.qDessin[i].libelle);
+    $('q3').textContent = S.meta.qTexte.libelle;
+    const sel = $('f-moment');
+    sel.value = d && d.moment ? d.moment : MOMENT_DEFAUT;
+    if (d && d.moment && sel.value !== d.moment) { const o = document.createElement('option'); o.textContent = d.moment; sel.append(o); sel.value = d.moment; }
+    $('f-texte').value = d && d.texte ? d.texte.value : '';
     boards.forEach(b => b.set([]));
-    $('editor').hidden = false;
-    $('list').hidden = true;
-    $('save-progress').textContent = '';
+    show('edit');
+    window.scrollTo({ top: 0 });
     if (d) {
-      $('save-progress').textContent = 'Chargement des dessins…';
+      $('progress').textContent = 'Chargement des dessins…';
       for (const [i, q] of S.meta.qDessin.entries()) {
         const ds = d.dessins[q.id];
         if (!ds) continue;
@@ -823,16 +742,12 @@
           epaisseur: Number(val(t, PREFIX + ':epaisseur')) || 7, points: safeJson(val(t, PREFIX + ':points')),
         })));
       }
-      $('save-progress').textContent = '';
+      $('progress').textContent = '';
     }
-    window.scrollTo({ top: 0 });
   }
 
-  function closeEditor() {
-    S.editing = null;
-    $('editor').hidden = true;
-    $('list').hidden = false;
-  }
+  let done = 0, total = 0;
+  const step = () => { done++; $('progress').textContent = `Enregistrement… ${Math.round(done / total * 100)} %`; };
 
   async function saveTraits(board, label) {
     const ids = [];
@@ -841,201 +756,142 @@
         lit(PREFIX + ':epaisseur', t.epaisseur), lit(PREFIX + ':points', JSON.stringify(t.points))];
       if (t.couleur) vals.push(lit(PREFIX + ':couleur', t.couleur));
       ids.push((await createItem(newItem('Trait', ...vals)))['o:id']);
-      progress();
+      step();
     }
     return ids;
   }
 
-  let done = 0, total = 0;
-  const progress = () => { done++; $('save-progress').textContent = `Enregistrement… ${done}/${total}`; };
-
   async function save() {
-    const moment = $('ed-moment').value;
-    const texte = $('ed-texte').value.trim();
+    const moment = $('f-moment').value, texte = $('f-texte').value.trim();
     if (boards.some(b => !b.strokes.length)) return say('Fais les deux dessins avant d\'enregistrer.', 'warn');
-    if (!texte) return say('Réponds à la question écrite avant d\'enregistrer.', 'warn');
+    if (!texte) return say('Écris ta réponse à la question avant d\'enregistrer.', 'warn');
     const btn = $('btn-save');
     btn.disabled = true;
     const P = PREFIX, now = nowLocal(), name = S.user.name, quand = formatDate(now);
     try {
       if (!S.editing) {
-        // CREATE : traits → réponses dessin (+ PNG) → réponse texte → passation
+        // CREATE : traits → réponses dessin (avec image PNG) → réponse texte → passation
         total = boards.reduce((n, b) => n + b.strokes.length + 1, 0) + 2; done = 0;
         const reponses = [];
         for (const [i, q] of S.meta.qDessin.entries()) {
           const label = `${q.libelle} — ${name} — ${quand}`;
           const traitIds = await saveTraits(boards[i], label);
-          const png = await boards[i].toPNG(`dessin-q${i + 1}.png`);
           const r = await createItem(newItem('ReponseDessin', lit('dcterms:title', 'Dessin — ' + label),
-            link(P + ':repondA', [q.id]), link(P + ':composeDe', traitIds), lit(P + ':modifieeLe', now)), png);
-          reponses.push(r['o:id']); progress();
+            link(P + ':repondA', [q.id]), link(P + ':aPourTrait', traitIds), lit(P + ':dateModification', now)),
+            await boards[i].toPNG(`dessin-q${i + 1}.png`));
+          reponses.push(r['o:id']); step();
         }
         const rt = await createItem(newItem('ReponseTexte', lit('dcterms:title', `Texte — ${name} — ${quand}`),
-          link(P + ':repondA', [S.meta.qTexte.id]), lit(P + ':texte', texte), lit(P + ':modifieeLe', now)));
-        reponses.push(rt['o:id']); progress();
+          link(P + ':repondA', [S.meta.qTexte.id]), lit(P + ':texte', texte), lit(P + ':dateModification', now)));
+        reponses.push(rt['o:id']); step();
         await createItem(newItem('Passation', lit('dcterms:title', `Passation — ${name} — ${quand}`),
-          lit(P + ':datePassation', now), lit(P + ':moment', moment),
+          lit(P + ':date', now), lit(P + ':moment', moment),
           link(P + ':realiseePar', [S.participantId]), link(P + ':porteSur', [S.meta.exercice['o:id']]),
-          link(P + ':contientReponse', reponses)));
-        progress();
-        say('Passation enregistrée dans Omeka S.');
+          link(P + ':aPourReponse', reponses)));
+        step();
+        say('Ta réponse est enregistrée.');
       } else {
         // UPDATE : seulement ce qui a changé
         const d = S.editing;
-        total = 2 + boards.reduce((n, b) => n + (b.dirty ? b.strokes.length + 3 : 0), 0); done = 0;
+        total = 2 + boards.reduce((n, b) => n + (b.dirty ? b.strokes.length + 2 : 0), 0); done = 0;
         if (moment !== d.moment) await updateItem(d.id, lit(P + ':moment', moment));
-        progress();
-        if (d.texte && texte !== d.texte.value) await updateItem(d.texte.item['o:id'], lit(P + ':texte', texte), lit(P + ':modifieeLe', now));
-        progress();
+        step();
+        if (d.texte && texte !== d.texte.value) await updateItem(d.texte.item['o:id'], lit(P + ':texte', texte), lit(P + ':dateModification', now));
+        step();
         for (const [i, q] of S.meta.qDessin.entries()) {
           const ds = d.dessins[q.id];
           if (!boards[i].dirty || !ds) continue;
           const label = `${q.libelle} — ${d.participantName} — ${formatDate(d.date)}`;
           const newIds = await saveTraits(boards[i], label);
-          await updateItem(ds.item['o:id'], link(P + ':composeDe', newIds), lit(P + ':modifieeLe', now));
+          await updateItem(ds.item['o:id'], link(P + ':aPourTrait', newIds), lit(P + ':dateModification', now));
           for (const id of ds.traitIds) await deleteItem(id).catch(() => {});
-          progress();
           await addMedia(ds.item['o:id'], await boards[i].toPNG(`dessin-q${i + 1}.png`));
           if (ds.mediaId) await deleteMedia(ds.mediaId).catch(() => {});
-          progress();
+          step();
         }
-        say('Passation modifiée.');
+        say('Ta réponse est modifiée.');
       }
-      closeEditor();
-      await refreshList();
+      showHome();
     } catch (e) {
-      say("Erreur pendant l'enregistrement : " + e.message, 'err', true);
+      say("L'enregistrement a échoué : " + e.message, 'err');
     } finally {
       btn.disabled = false;
-      $('save-progress').textContent = '';
+      $('progress').textContent = '';
     }
   }
 
-  async function removePassation(d, btn) {
+  async function removeOne(d, btn) {
     btn.disabled = true;
     try {
-      // DELETE : traits, réponses (les médias partent avec leur item), puis la passation
+      // DELETE : traits, réponses (les images partent avec), puis la passation
       for (const ds of Object.values(d.dessins)) {
         for (const id of ds.traitIds) await deleteItem(id).catch(() => {});
         await deleteItem(ds.item['o:id']);
       }
       if (d.texte) await deleteItem(d.texte.item['o:id']);
       await deleteItem(d.id);
-      say('Passation supprimée.');
-    } catch (e) { say('Suppression incomplète : ' + e.message, 'err', true); }
+      say('Réponse supprimée.');
+    } catch (e) { say('Suppression incomplète : ' + e.message, 'err'); }
     await refreshList();
   }
 
-  // ────────────────────────────────────────────────────────────
-  // OUTILS
-  // ────────────────────────────────────────────────────────────
+  // ── Outils ────────────────────────────────────────────────────
   function nowLocal() { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
-  function today() { return nowLocal().slice(0, 10); }
+  const today = () => nowLocal().slice(0, 10);
   function formatDate(s) {
     if (!s) return '';
     const d = new Date(s);
     if (isNaN(d)) return s;
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) + (s.length > 10 ? ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '');
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) + (s.length > 10 ? ' à ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '');
   }
   function safeJson(s) { try { const v = JSON.parse(s); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 
-  // ────────────────────────────────────────────────────────────
-  // AFFICHAGE : en-tête, paramètres, onglets
-  // ────────────────────────────────────────────────────────────
-  function renderWho() {
-    const u = S.user;
-    $('who-none').hidden = !!u;
-    $('who-user').hidden = !u;
-    $('btn-logout').hidden = !u;
-    if (u) {
-      $('who-name').textContent = u.name;
-      $('who-provider').textContent = providerLabel(u.provider);
-      $('who-avatar').hidden = !u.avatar;
-      if (u.avatar) $('who-avatar').src = u.avatar;
-    }
-    $('who-rights').textContent = S.canWrite ? 'lecture + écriture' : 'lecture seule';
-  }
-
-  function openSettings() {
-    const s = S.settings;
-    $('set-api').value = s.api; $('set-ident').value = s.ident; $('set-cred').value = s.cred;
-    $('set-remember').checked = s.remember; $('set-cas').value = s.cas; $('set-casproxy').value = s.casProxy; $('set-google').value = s.google;
-    $('settings').hidden = false;
-  }
-
-  async function applySettings() {
-    S.settings = {
-      api: $('set-api').value.trim() || DEFAULTS.api, ident: $('set-ident').value.trim(), cred: $('set-cred').value.trim(),
-      remember: $('set-remember').checked, cas: $('set-cas').value.trim() || DEFAULTS.cas, casProxy: $('set-casproxy').value.trim(), google: $('set-google').value.trim(),
-    };
-    saveSettings(S.settings);
-    $('cas-server').textContent = S.settings.cas;
-    if (!document.querySelector('[data-pane=google]').hidden) initGoogle();
-    await connect();
-    if (S.meta) $('settings').hidden = true;
-  }
-
-  function selectTab(name) {
-    document.querySelectorAll('#login [role=tab]').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === name)));
-    document.querySelectorAll('#login [data-pane]').forEach(p => p.hidden = p.dataset.pane !== name);
-    if (name === 'google') initGoogle();
-  }
-
-  // Connexion à Omeka S : métadonnées, droits, participant, liste
-  async function connect() {
-    say('Connexion à Omeka S…', 'warn', true);
-    S.meta = null;
-    try {
-      await loadMeta();
-      await checkKey();
-      if (S.user) await attachParticipant();
-      renderWho();
-      if (!document.querySelector('#status .msg.err')) say('Omeka S connecté (' + (S.canWrite ? 'lecture et écriture' : 'lecture seule') + ').');
-      await refreshList();
-    } catch (e) {
-      renderWho();
-      $('cards').replaceChildren();
-      say(e.message, 'err', true);
+  // ── Écrans ────────────────────────────────────────────────────
+  function show(name) {
+    $('screen-login').hidden = name !== 'login';
+    $('screen-home').hidden = name !== 'home';
+    $('screen-edit').hidden = name !== 'edit';
+    $('who').hidden = name === 'login';
+    if (S.user) {
+      $('who-name').textContent = S.user.name;
+      $('who-avatar').hidden = !S.user.avatar;
+      if (S.user.avatar) $('who-avatar').src = S.user.avatar;
     }
   }
+  function showLogin() { fillForm(); show('login'); }
+  async function showHome() { S.editing = null; show('home'); await refreshList(); }
 
-  // ────────────────────────────────────────────────────────────
-  // DÉMARRAGE
-  // ────────────────────────────────────────────────────────────
+  const guard = fn => async () => { say(''); try { await fn(); } catch (e) { say(e.message, 'err'); } };
+
+  // ── Démarrage ─────────────────────────────────────────────────
   async function start() {
     setupTools();
     S.settings = loadSettings();
-    $('cas-server').textContent = S.settings.cas;
-    S.user = store.get('user', true);
-
-    $('btn-settings').onclick = () => $('settings').hidden ? openSettings() : ($('settings').hidden = true);
-    $('btn-close-settings').onclick = () => $('settings').hidden = true;
-    $('btn-save-settings').onclick = applySettings;
-    $('btn-forget-key').onclick = () => { $('set-ident').value = ''; $('set-cred').value = ''; applySettings(); };
+    fillForm();
+    $('btn-login').onclick = guard(loginOmeka);
+    $('btn-github').onclick = guard(loginGithub);
+    $('btn-cas').onclick = guard(async () => loginCas());
+    $('other-methods').addEventListener('toggle', () => { if ($('other-methods').open) { readForm(); initGoogle(); } });
     $('btn-logout').onclick = signOut;
-    $('btn-login-omeka').onclick = () => loginOmeka().catch(e => say(e.message, 'err'));
-    $('btn-login-github').onclick = () => loginGithub().catch(e => say(e.message, 'err'));
-    $('btn-login-cas').onclick = loginCas;
-    document.querySelectorAll('#login [role=tab]').forEach(t => t.onclick = () => selectTab(t.dataset.tab));
     $('btn-new').onclick = () => openEditor(null);
-    $('btn-cancel').onclick = closeEditor;
+    $('btn-cancel').onclick = () => showHome();
     $('btn-save').onclick = save;
-    $('btn-refresh').onclick = refreshList;
-    $('only-mine').onchange = refreshList;
-
-    renderWho();
-    if (!store.get('settings')) openSettings();
-    await connect();
+    $('f-all').onchange = refreshList;
 
     const ticket = new URLSearchParams(location.search).get('ticket');
-    if (ticket && S.meta) {
-      try { await casCallback(ticket); } catch (e) { say('Connexion CAS impossible : ' + e.message, 'err', true); }
+    if (ticket) {
+      try { await casCallback(ticket); return; }
+      catch (e) { showLogin(); return say('Connexion avec l\'université impossible : ' + e.message, 'err'); }
     }
-    $('login').hidden = !!S.user;
+    const saved = store.get('user', true);
+    if (saved && S.settings.ident && S.settings.cred) {
+      try { await connect(); S.user = saved; await attachParticipant(); return showHome(); }
+      catch (e) { say(e.message, 'err'); }
+    }
+    showLogin();
   }
 
-  // Accès pour les tests automatiques
-  window.ai1 = { S, onGoogleCredential, boards };
+  window.ai1 = { S, onGoogleCredential, boards };   // pour les tests automatiques
   start();
 })();
 </script>

@@ -1,8 +1,8 @@
 {
-    "o:label": "artinq_ReponseTexte",
+    "o:label": "Ex1 ReponseTexte",
     "o:resource_template_property": [
         {
-            "o:alternate_label": "Titre de la r\u00e9ponse",
+            "o:alternate_label": "Titre de la réponse",
             "o:alternate_comment": null,
             "o:is_required": false,
             "o:is_private": false,
@@ -13,7 +13,7 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "http:\/\/purl.org\/dc\/terms\/",
+            "vocabulary_namespace_uri": "http://purl.org/dc/terms/",
             "vocabulary_label": "Dublin Core",
             "local_name": "title",
             "label": "Title"
@@ -30,10 +30,10 @@
                     "label": "Item"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "repondA",
-            "label": "r\u00e9pond \u00e0"
+            "label": "répond à"
         },
         {
             "o:alternate_label": null,
@@ -47,7 +47,7 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
             "local_name": "texte",
             "label": "texte"
@@ -64,20 +64,20 @@
                     "label": "Text"
                 }
             ],
-            "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+            "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
             "vocabulary_label": "Artificial Inquiries",
-            "local_name": "modifieeLe",
-            "label": "modifi\u00e9e le"
+            "local_name": "dateModification",
+            "label": "date de modification"
         }
     ],
     "o:resource_class": {
-        "vocabulary_namespace_uri": "https:\/\/humanum-p8.fr\/omk_artificialinquiries\/onto\/artinq#",
+        "vocabulary_namespace_uri": "https://humanum-p8.fr/omk_artificialinquiries/onto/artinq#",
         "vocabulary_label": "Artificial Inquiries",
         "local_name": "ReponseTexte",
-        "label": "R\u00e9ponse texte"
+        "label": "Réponse texte"
     },
     "o:title_property": {
-        "vocabulary_namespace_uri": "http:\/\/purl.org\/dc\/terms\/",
+        "vocabulary_namespace_uri": "http://purl.org/dc/terms/",
         "vocabulary_label": "Dublin Core",
         "local_name": "title",
         "label": "Title"

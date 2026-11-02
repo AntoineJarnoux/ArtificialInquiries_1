@@ -417,20 +417,35 @@
       if (t.title) data['o:title_property'] = ref(t.title);
       if (t.desc) data['o:description_property'] = ref(t.desc);
       try { M.RT[t.label] = (await api('resource_templates', { method: 'POST', json: data }))['o:id']; }
-      catch (e) { throw new Error('Impossible de créer le modèle « ' + t.label + ' » (' + e.message + '). Vérifie ta clé API.'); }
+      catch (e) {
+        // Un module de la base peut renvoyer une erreur alors que le modèle est bien enregistré : on vérifie
+        const found = await api('resource_templates', { params: { label: t.label } }).catch(() => []);
+        if (!found.length) throw new Error('Impossible de créer le modèle « ' + t.label + ' » (' + e.message + '). Vérifie ta clé API.');
+        M.RT[t.label] = found[0]['o:id'];
+      }
     }
   }
   // Crée les 3 questions et les relie à l'item « Exercice 1 » (propriété « a pour question »)
   async function installQuestions(M) {
     say("Première connexion : création des questions de l'exercice 1…");
-    const ids = [];
+    const ids = [], created = [];
+    const findQ = q => api('items', { params: {
+      resource_template_id: M.RT[TPL + 'Question'],
+      'property[0][property]': M.P[PREFIX + ':libelle'], 'property[0][type]': 'eq', 'property[0][text]': q.libelle,
+    } });
     for (const q of QUESTIONS) {
-      const it = await createItem(newItem('Question', lit(PREFIX + ':ordre', q.ordre), lit(PREFIX + ':libelle', q.libelle), lit(PREFIX + ':type', q.type)));
-      ids.push(it['o:id']);
+      let found = await findQ(q);   // déjà créée lors d'un essai précédent ?
+      if (!found.length) {
+        try { created.push((await createItem(newItem('Question', lit(PREFIX + ':ordre', q.ordre), lit(PREFIX + ':libelle', q.libelle), lit(PREFIX + ':type', q.type))))['o:id']); }
+        catch (e) { found = await findQ(q); if (!found.length) throw e; }
+      }
+      ids.push(found.length ? found[0]['o:id'] : created[created.length - 1]);
     }
     try { M.exercice = await updateItem(M.exercice['o:id'], link(PREFIX + ':aPourQuestion', ids)); }
     catch (e) {
-      await Promise.all(ids.map(id => deleteItem(id).catch(() => null)));
+      const again = await api('items/' + M.exercice['o:id']).catch(() => null);   // enregistré malgré l'erreur ?
+      if (again && ids.every(id => links(again, PREFIX + ':aPourQuestion').includes(id))) { M.exercice = again; return ids; }
+      await Promise.all(created.map(id => deleteItem(id).catch(() => null)));
       throw new Error("Impossible d'ajouter les questions à l'item « Exercice 1 » (" + e.message + ').');
     }
     return ids;

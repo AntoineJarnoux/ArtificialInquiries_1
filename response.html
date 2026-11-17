@@ -68,7 +68,10 @@
   .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
   .tools button { padding: 6px 10px; font-size: 14px; background: transparent; color: var(--ink); border-color: var(--rule); }
   .tools button[aria-pressed=true] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .swatch { width: 30px; height: 30px; padding: 0 !important; border-radius: 50% !important; }
+  .swatch { width: 30px; height: 30px; padding: 0 !important; border-radius: 50% !important; border: 2px solid #ffffff !important; box-shadow: 0 0 0 1px #8a93a3; }
+  .tools .swatch[aria-pressed=true] { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .note { border: 1px dashed var(--rule); border-radius: 8px; padding: 10px 12px; font-size: 14px; color: var(--soft); margin: 10px 0; }
+  .or { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 10px; }
   .boards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   @media (max-width: 700px) { .boards { grid-template-columns: minmax(0, 1fr); } }
   .board { display: grid; gap: 6px; min-width: 0; }
@@ -96,7 +99,7 @@
   <!-- ÉCRAN 1 : connexion -->
   <section class="card" id="screen-login">
     <h2>Connexion</h2>
-    <p class="hint">Tes dessins sont enregistrés dans ton Omeka S. Pour cela, la page a besoin de ta clé API (Omeka S → Utilisateurs → ton compte → Modifier → onglet « Clés API »).</p>
+    <p class="hint">Pour faire l'exercice, la page a besoin de ta clé API de la base commune (Omeka S → clique sur ton nom → Edit → onglet « API keys »). Sans clé, tu peux quand même regarder les réponses.</p>
 
     <div class="fields">
       <label>Email de ton compte Omeka S
@@ -112,15 +115,21 @@
       </div>
       <label class="check"><input type="checkbox" id="f-remember"> Se souvenir de moi sur cet ordinateur</label>
     </div>
-    <button class="big" id="btn-login">Se connecter</button>
+    <div class="or">
+      <button class="big" id="btn-login">Se connecter</button>
+      <button class="ghost" id="btn-visitor">Continuer sans compte (lecture seule)</button>
+    </div>
 
     <details id="other-methods">
       <summary>Se connecter avec GitHub, Google ou l'université (CAS)</summary>
-      <p class="hint" style="margin-top:10px">Ta clé Omeka S ci-dessus reste nécessaire pour enregistrer. Ces boutons servent à dire qui tu es.</p>
+      <p class="hint" style="margin-top:10px">Sans clé API, ces connexions ouvrent la page en <strong>lecture seule</strong>. Pour faire l'exercice, remplis aussi ta clé ci-dessus.</p>
 
       <div class="method">
         <h3>GitHub</h3>
-        <p class="hint">Crée un jeton sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> (aucune case à cocher), puis colle-le ici. Il n'est pas gardé.</p>
+        <p class="hint">GitHub ne permet pas de se connecter directement depuis une page GitHub Pages : il faut un jeton personnel (il sert seulement à lire ton nom, il n'est pas gardé).<br>
+          1. Ouvre <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">https://github.com/settings/personal-access-tokens/new</a><br>
+          2. Donne-lui un nom, laisse « Public repositories », ne coche aucune permission, puis clique sur « Generate token ».<br>
+          3. Copie le jeton (il commence par <code>github_pat_</code>) et colle-le ici.</p>
         <div class="row"><input type="password" id="f-github" placeholder="Jeton GitHub" style="max-width:340px" autocomplete="off"><button id="btn-github">Se connecter avec GitHub</button></div>
       </div>
 
@@ -155,11 +164,12 @@
 
   <!-- ÉCRAN 2 : mes réponses -->
   <section class="card" id="screen-home" hidden>
-    <h2>Mes réponses</h2>
+    <h2 id="home-title">Mes réponses</h2>
     <p class="hint">Chaque fois que tu fais l'exercice, tes 2 dessins et ta phrase sont enregistrés ensemble. Tu peux le refaire plus tard pour voir comment ta vision évolue.</p>
+    <p class="note" id="ro-note" hidden></p>
     <button class="big" id="btn-new">Faire l'exercice</button>
     <div class="list" id="list"></div>
-    <label class="check" style="margin-top:14px;font-size:14px"><input type="checkbox" id="f-all"> Voir aussi les réponses des autres</label>
+    <label class="check" id="all-wrap" style="margin-top:14px;font-size:14px"><input type="checkbox" id="f-all"> Voir aussi les réponses des autres</label>
   </section>
 
   <!-- ÉCRAN 3 : faire / modifier l'exercice -->
@@ -252,7 +262,7 @@
 
   const $ = id => document.getElementById(id);
   const S = {
-    settings: null, meta: null, canWrite: false,
+    settings: null, meta: null, canWrite: false, useKey: false, keyRefused: false,
     user: null, participantId: null,
     list: [], editing: null,
     tool: { outil: 'CRAYON', couleur: COLORS[0], epaisseur: 7 },
@@ -318,7 +328,7 @@
     if (viaProxy()) { u = new URL(S.settings.apiProxy); u.searchParams.set('path', path); }
     else u = new URL(path, apiBase());
     for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
-    if (S.settings.ident && S.settings.cred) {
+    if (S.useKey && S.settings.ident && S.settings.cred) {
       u.searchParams.set('key_identity', S.settings.ident);
       u.searchParams.set('key_credential', S.settings.cred);
     }
@@ -352,7 +362,7 @@
       try { data = JSON.parse(text); }
       catch (e) { throw new Error("Omeka S est en erreur : sa base de données ne répond peut-être pas (en local : MySQL est-il allumé dans XAMPP ?)."); }
     }
-    if (!r.ok || (data && data.errors)) throw new Error(omekaError(data, r.status));
+    if (!r.ok || (data && data.errors)) { const e = new Error(omekaError(data, r.status)); e.status = r.status; throw e; }
     return data;
   }
 
@@ -469,7 +479,7 @@
     if (noC.length) throw new Error('Classes absentes du vocabulaire « ' + PREFIX + ' » de cet Omeka S : ' + noC.join(', ') + '.');
     S.meta = M;
     if (CLASSES.some(c => !M.RT[TPL + c])) {
-      if (!S.settings.ident || !S.settings.cred) throw new Error('Remplis key_identity et key_credential.');
+      if (!S.canWrite) throw new Error("Les modèles « Ex1 … » ne sont pas encore dans la base : connecte-toi une première fois avec une clé API pour les créer.");
       await installTemplates(M);
     }
     const noRT = WRITES.filter(c => !M.RT[TPL + c]);
@@ -487,7 +497,10 @@
     if (!ex.length) throw new Error("L'exercice 1 est introuvable dans Omeka S (item de classe Exercice, numéro 1).");
     M.exercice = ex.find(e => links(e, PREFIX + ':aPourQuestion').length) || ex[0];
     let qIds = links(M.exercice, PREFIX + ':aPourQuestion');
-    if (!qIds.length) qIds = await installQuestions(M);
+    if (!qIds.length) {
+      if (!S.canWrite) throw new Error("L'exercice 1 n'a pas encore ses questions : connecte-toi une première fois avec une clé API pour les créer.");
+      qIds = await installQuestions(M);
+    }
     const qs = await Promise.all(qIds.map(id => api('items/' + id)));
     qs.sort((a, b) => Number(val(a, PREFIX + ':ordre')) - Number(val(b, PREFIX + ':ordre')));
     M.questions = qs.map(q => ({ id: q['o:id'], libelle: val(q, PREFIX + ':libelle'), type: val(q, PREFIX + ':type') }));
@@ -496,12 +509,24 @@
     if (M.qDessin.length < 2 || !M.qTexte) throw new Error("L'exercice 1 doit avoir 2 questions DESSIN et 1 question TEXTE.");
   }
 
-  // Vérifie la connexion à Omeka S et la clé API
-  async function connect() {
-    if (!S.settings.ident || !S.settings.cred) throw new Error('Remplis key_identity et key_credential.');
+  // Vérifie la connexion à Omeka S et la clé API.
+  // Sans clé (ou si la base la refuse), la page s'ouvre en lecture seule.
+  const KEY_REFUSED = "La base refuse ta clé API. Elle doit avoir été créée sur la base commune " +
+    "(https://humanum-p8.fr/omk_artificialinquiries/admin → ton nom → Edit → API keys), pas sur ton Omeka local, " +
+    "et key_identity et key_credential doivent être copiés en entier, sans espace.";
+  async function connect({ keyRequired = false, noKey = false } = {}) {
+    const hasKey = !noKey && !!(S.settings.ident && S.settings.cred);
+    if (keyRequired && !hasKey) throw new Error('Remplis key_identity et key_credential.');
+    S.canWrite = false; S.keyRefused = false; S.useKey = hasKey;
+    if (hasKey) {
+      try { await api('users', { params: { per_page: 1 } }); S.canWrite = true; }
+      catch (e) {
+        if (!e.status) throw e;              // relais ou réseau en panne : ce n'est pas la clé
+        S.useKey = false; S.keyRefused = true;
+        if (keyRequired) throw new Error(KEY_REFUSED);
+      }
+    }
     await loadMeta();
-    try { await api('users', { params: { per_page: 1 } }); S.canWrite = true; }
-    catch (e) { S.canWrite = false; throw new Error('Ta clé API est refusée par Omeka S : vérifie key_identity et key_credential.'); }
   }
 
   // ── Connexion (authentification) ─────────────────────────────
@@ -510,10 +535,11 @@
     store.set('user', user, true);
     await attachParticipant();
     showHome();
-    say('Bonjour ' + user.name + ' !');
+    if (S.keyRefused) say('Bonjour ' + user.name + ' ! ' + KEY_REFUSED + ' En attendant, la page est en lecture seule.', 'warn');
+    else say('Bonjour ' + user.name + ' !' + (S.canWrite ? '' : ' (lecture seule)'));
   }
   function signOut() {
-    S.user = null; S.participantId = null;
+    S.user = null; S.participantId = null; S.canWrite = false; S.useKey = false; S.keyRefused = false;
     store.del('user');
     try { if (window.google && google.accounts) google.accounts.id.disableAutoSelect(); } catch (e) {}
     showLogin();
@@ -523,10 +549,17 @@
   async function loginOmeka() {
     readForm();
     if (!S.settings.email) throw new Error("Indique l'email de ton compte Omeka S.");
-    await connect();
+    await connect({ keyRequired: true });
     const users = await api('users', { params: { email: S.settings.email } });
     if (!users.length) throw new Error('Aucun compte Omeka S avec cet email.');
     await signIn({ provider: 'omeka', id: String(users[0]['o:id']), name: users[0]['o:name'], role: users[0]['o:role'] });
+  }
+
+  // 0) Sans compte : lecture seule, sans clé
+  async function loginVisitor() {
+    readForm();
+    await connect({ noKey: true });
+    await signIn({ provider: 'visiteur', id: '', name: 'Visiteur' });
   }
 
   // 2) GitHub : jeton personnel → profil public (l'API GitHub accepte les appels du navigateur)
@@ -583,7 +616,6 @@
   const serviceUrl = () => location.origin + location.pathname;
   function loginCas() {
     readForm();
-    if (!S.settings.ident || !S.settings.cred) throw new Error("Remplis d'abord ta clé Omeka S (key_identity et key_credential).");
     const base = S.settings.cas.replace(/\/+$/, '');
     store.set('casPending', base, true);
     location.href = base + '/login?service=' + encodeURIComponent(serviceUrl());
@@ -599,7 +631,7 @@
     let r;
     try { r = await fetch(target); }
     catch (e) {
-      throw new Error(proxy ? "le relais de vérification ne répond pas (XAMPP est-il allumé ?)." : "le serveur CAS refuse la vérification depuis le navigateur : il faut le relais.");
+      throw new Error(proxy ? "le relais de vérification ne répond pas, réessaie dans un instant." : "le serveur CAS refuse la vérification depuis le navigateur : il faut le relais.");
     }
     const text = (await r.text()).trim();
     let user = null, failure = null;
@@ -622,6 +654,7 @@
   // Le compte devient un item Participant (artinq:fournisseur + artinq:identifiant)
   async function attachParticipant() {
     S.participantId = null;
+    if (!S.user || S.user.provider === 'visiteur') return;
     const found = await api('items', { params: {
       resource_template_id: S.meta.RT[TPL + 'Participant'],
       'property[0][property]': S.meta.P[PREFIX + ':identifiant'], 'property[0][type]': 'eq', 'property[0][text]': String(S.user.id),
@@ -629,6 +662,7 @@
       'property[1][property]': S.meta.P[PREFIX + ':fournisseur'], 'property[1][type]': 'eq', 'property[1][text]': S.user.provider,
     } });
     if (found.length) { S.participantId = found[0]['o:id']; return; }
+    if (!S.canWrite) return;
     const p = await createItem(newItem('Participant',
       lit(PREFIX + ':pseudo', S.user.name), lit(PREFIX + ':dateInscription', today()),
       lit(PREFIX + ':fournisseur', S.user.provider), lit(PREFIX + ':identifiant', S.user.id)));
@@ -662,8 +696,9 @@
     return d;
   }
 
+  const readOnlyAll = () => !S.canWrite && !S.participantId;
   async function refreshList() {
-    const all = $('f-all').checked;
+    const all = $('f-all').checked || readOnlyAll();
     const params = { resource_template_id: S.meta.RT[TPL + 'Passation'], sort_by: 'created', sort_order: 'desc', per_page: 50 };
     if (!all) Object.assign(params, { 'property[0][property]': S.meta.P[PREFIX + ':realiseePar'], 'property[0][type]': 'res', 'property[0][text]': S.participantId });
     try {
@@ -673,14 +708,14 @@
     } catch (e) { say(e.message, 'err'); }
   }
 
-  const isMine = d => d.participantId === S.participantId;
+  const isMine = d => !!S.participantId && d.participantId === S.participantId;
 
   function renderList() {
     const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
     const list = $('list');
     list.replaceChildren();
     if (!S.list.length) {
-      list.append(el('p', 'empty', $('f-all').checked ? "Personne n'a encore fait l'exercice." : "Tu n'as pas encore fait l'exercice."));
+      list.append(el('p', 'empty', ($('f-all').checked || readOnlyAll()) ? "Personne n'a encore fait l'exercice." : "Tu n'as pas encore fait l'exercice."));
       return;
     }
     for (const d of S.list) {
@@ -695,7 +730,7 @@
       });
       card.append(pics);
       if (d.texte && d.texte.value) card.append(el('blockquote', null, d.texte.value));
-      if (isMine(d)) {
+      if (isMine(d) && S.canWrite) {
         const row = el('div', 'row');
         const bEdit = el('button', 'ghost', 'Modifier');
         bEdit.onclick = () => openEditor(d);
@@ -841,6 +876,7 @@
   }
 
   async function save() {
+    if (!S.canWrite) return say('Lecture seule : connecte-toi avec ta clé API pour enregistrer.', 'warn');
     const moment = $('f-moment').value, texte = $('f-texte').value.trim();
     if (boards.some(b => !b.strokes.length)) return say('Fais les deux dessins avant d\'enregistrer.', 'warn');
     if (!texte) return say('Écris ta réponse à la question avant d\'enregistrer.', 'warn');
@@ -938,7 +974,16 @@
     }
   }
   function showLogin() { fillForm(); show('login'); }
-  async function showHome() { S.editing = null; show('home'); await refreshList(); }
+  function applyMode() {
+    const ro = !S.canWrite;
+    $('btn-new').hidden = ro;
+    $('home-title').textContent = readOnlyAll() ? 'Les réponses' : 'Mes réponses';
+    $('all-wrap').hidden = readOnlyAll();
+    $('ro-note').hidden = !ro;
+    $('ro-note').textContent = !ro ? '' : (S.keyRefused ? 'Ta clé API a été refusée par la base : ' : '') +
+      'Lecture seule : tu peux regarder les réponses, mais pas faire l\'exercice. Pour le faire, clique sur « Se déconnecter » puis connecte-toi avec ta clé API de la base commune.';
+  }
+  async function showHome() { S.editing = null; show('home'); applyMode(); await refreshList(); }
 
   const guard = fn => async () => { say(''); try { await fn(); } catch (e) { say(e.message, 'err'); } };
 
@@ -948,6 +993,7 @@
     S.settings = loadSettings();
     fillForm();
     $('btn-login').onclick = guard(loginOmeka);
+    $('btn-visitor').onclick = guard(loginVisitor);
     $('btn-github').onclick = guard(loginGithub);
     $('btn-cas').onclick = guard(async () => loginCas());
     $('other-methods').addEventListener('toggle', () => { if ($('other-methods').open) { readForm(); initGoogle(); } });
@@ -963,8 +1009,8 @@
       catch (e) { showLogin(); return say('Connexion avec l\'université impossible : ' + e.message, 'err'); }
     }
     const saved = store.get('user', true);
-    if (saved && S.settings.ident && S.settings.cred) {
-      try { await connect(); S.user = saved; await attachParticipant(); return showHome(); }
+    if (saved) {
+      try { await connect({ noKey: saved.provider === 'visiteur' }); S.user = saved; await attachParticipant(); return showHome(); }
       catch (e) { say(e.message, 'err'); }
     }
     showLogin();

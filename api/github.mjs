@@ -6,7 +6,7 @@
 // Le secret est la variable d'environnement Vercel GITHUB_CLIENT_SECRET.
 // Adresse : https://<projet>.vercel.app/api/github?code=...
 
-const CLIENT_ID = 'Ov23liCLIENT_ID_A_REMPLIR';   // identifiant public de l'application OAuth GitHub
+const CLIENT_ID = 'Ov23liYZ0M39fXFUlDTL';   // identifiant public de l'application OAuth GitHub
 const REDIRECT_URI = 'https://antoinejarnoux.github.io/ArtificialInquiries_1/response.html';
 const GITHUB = 'https://github.com';
 const GITHUB_API = 'https://api.github.com';

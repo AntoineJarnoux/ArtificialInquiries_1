@@ -126,11 +126,17 @@
 
       <div class="method">
         <h3>GitHub</h3>
-        <p class="hint">GitHub ne permet pas de se connecter directement depuis une page GitHub Pages : il faut un jeton personnel (il sert seulement à lire ton nom, il n'est pas gardé).<br>
+        <div id="github-oauth" hidden>
+          <button id="btn-github-oauth">Se connecter avec GitHub</button>
+          <p class="hint">Tu vas sur GitHub, tu cliques sur « Authorize », puis tu reviens ici. La page ne lit que ton nom public.</p>
+        </div>
+        <div id="github-token">
+        <p class="hint">Avec un jeton personnel (il sert seulement à lire ton nom, il n'est pas gardé) :<br>
           1. Ouvre <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">https://github.com/settings/personal-access-tokens/new</a><br>
           2. Donne-lui un nom, laisse « Public repositories », ne coche aucune permission, puis clique sur « Generate token ».<br>
           3. Copie le jeton (il commence par <code>github_pat_</code>) et colle-le ici.</p>
         <div class="row"><input type="password" id="f-github" placeholder="Jeton GitHub" style="max-width:340px" autocomplete="off"><button id="btn-github">Se connecter avec GitHub</button></div>
+        </div>
       </div>
 
       <div class="method">
@@ -230,6 +236,8 @@
     casProxy: 'https://artificialinquiries1.vercel.app/api/cas',  // relais (api/cas.mjs) : le CAS de Paris 8 refuse la vérification depuis le navigateur
     apiProxy: 'https://artificialinquiries1.vercel.app/api/omk',  // relais (api/omk.mjs) : la base commune n'envoie pas d'en-tête CORS
     google: '1046577410496-qjkqfq4448rv2iggia9tpkfve08sf40q.apps.googleusercontent.com',  // Client ID Google (public)
+    github: '',  // Client ID de l'application OAuth GitHub (public) ; vide = connexion par jeton personnel
+    githubProxy: 'https://artificialinquiries1.vercel.app/api/github',  // relais (api/github.mjs) : échange le code avec le secret
   };
   const PREFIX = 'artinq';
   const COMMON_API = 'https://humanum-p8.fr/omk_artificialinquiries/api/';  // base commune, appelée via le relais
@@ -283,6 +291,7 @@
     return {
       api: pub.api || DEFAULTS.api, cas: pub.cas || DEFAULTS.cas, google: pub.google || DEFAULTS.google,
       casProxy: DEFAULTS.casProxy, apiProxy: DEFAULTS.apiProxy,  // relais fixes (fonctions Vercel du dépôt)
+      github: DEFAULTS.github, githubProxy: DEFAULTS.githubProxy,
       email: pub.email || '', ident: key.ident || '', cred: key.cred || '', remember: !!store.get('key'),
     };
   }
@@ -295,6 +304,7 @@
     S.settings = {
       api: $('f-api').value.trim() || DEFAULTS.api, cas: $('f-cas').value.trim() || DEFAULTS.cas,
       casProxy: DEFAULTS.casProxy, apiProxy: DEFAULTS.apiProxy, google: $('f-google').value.trim(),
+      github: DEFAULTS.github, githubProxy: DEFAULTS.githubProxy,
       email: $('f-email').value.trim(), ident: $('f-ident').value.trim(), cred: $('f-cred').value.trim(),
       remember: $('f-remember').checked,
     };
@@ -562,7 +572,29 @@
     await signIn({ provider: 'visiteur', id: '', name: 'Visiteur' });
   }
 
-  // 2) GitHub : jeton personnel → profil public (l'API GitHub accepte les appels du navigateur)
+  // 2) GitHub, avec le bouton : page d'autorisation GitHub, puis le relais échange le code (il a le secret)
+  function loginGithubOAuth() {
+    readForm();
+    const state = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
+    store.set('ghPending', state, true);
+    location.href = 'https://github.com/login/oauth/authorize?client_id=' + encodeURIComponent(S.settings.github) +
+      '&redirect_uri=' + encodeURIComponent(serviceUrl()) + '&state=' + state + '&allow_signup=false';
+  }
+  async function githubCallback(code, state) {
+    const expected = store.get('ghPending', true);
+    store.del('ghPending');
+    history.replaceState(null, '', serviceUrl());
+    if (!expected || state !== expected) throw new Error('réponse de GitHub inattendue, recommence.');
+    let r;
+    try { r = await fetch(S.settings.githubProxy + '?code=' + encodeURIComponent(code)); }
+    catch (e) { throw new Error('le relais GitHub ne répond pas, réessaie dans un instant.'); }
+    const g = await r.json().catch(() => ({}));
+    if (!r.ok || !g.login) throw new Error(g.error || 'GitHub a refusé la connexion.');
+    await connect();
+    await signIn({ provider: 'github', id: g.login, name: g.name || g.login, avatar: g.avatar });
+  }
+
+  // 2 bis) GitHub sans application OAuth : jeton personnel → profil public (l'API GitHub accepte les appels du navigateur)
   async function loginGithub() {
     readForm();
     const token = $('f-github').value.trim();
@@ -995,6 +1027,9 @@
     $('btn-login').onclick = guard(loginOmeka);
     $('btn-visitor').onclick = guard(loginVisitor);
     $('btn-github').onclick = guard(loginGithub);
+    $('btn-github-oauth').onclick = guard(async () => loginGithubOAuth());
+    $('github-oauth').hidden = !S.settings.github;   // bouton GitHub si l'application OAuth est réglée,
+    $('github-token').hidden = !!S.settings.github;  // sinon le jeton personnel
     $('btn-cas').onclick = guard(async () => loginCas());
     $('other-methods').addEventListener('toggle', () => { if ($('other-methods').open) { readForm(); initGoogle(); } });
     $('btn-logout').onclick = signOut;
@@ -1003,7 +1038,16 @@
     $('btn-save').onclick = save;
     $('f-all').onchange = refreshList;
 
-    const ticket = new URLSearchParams(location.search).get('ticket');
+    const qs = new URLSearchParams(location.search);
+    if (qs.get('code') && qs.get('state')) {
+      try { await githubCallback(qs.get('code'), qs.get('state')); return; }
+      catch (e) { showLogin(); return say('Connexion avec GitHub impossible : ' + e.message, 'err'); }
+    }
+    if (qs.get('error') && store.get('ghPending', true)) {   // « Cancel » sur la page GitHub
+      store.del('ghPending'); history.replaceState(null, '', serviceUrl());
+      showLogin(); return say('Connexion avec GitHub annulée.', 'warn');
+    }
+    const ticket = qs.get('ticket');
     if (ticket) {
       try { await casCallback(ticket); return; }
       catch (e) { showLogin(); return say('Connexion avec l\'université impossible : ' + e.message, 'err'); }

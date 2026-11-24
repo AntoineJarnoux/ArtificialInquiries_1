@@ -5,6 +5,9 @@
 // puis renvoie la réponse à la page avec l'en-tête CORS.
 // Adresse : https://<projet>.vercel.app/api/omk?path=items&...
 // Elle ne relaie que l'API de la base commune, et seulement pour les pages autorisées ci-dessous.
+// La clé API arrive dans les en-têtes X-Omeka-Key-Identity / X-Omeka-Key-Credential, pas dans l'adresse :
+// elle n'apparaît donc ni dans l'historique ni dans les journaux de Vercel. Omeka S ne lit la clé que
+// dans l'URL : le relais l'y ajoute ici, côté serveur (connexion HTTPS vers la base commune).
 
 const API_URL = 'https://humanum-p8.fr/omk_artificialinquiries/api/';
 const ALLOWED = /^(https:\/\/antoinejarnoux\.github\.io|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
@@ -17,7 +20,7 @@ export default {
       ? {
           'Access-Control-Allow-Origin': origin,
           'Access-Control-Allow-Methods': METHODS.join(', ') + ', OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Headers': 'Content-Type, X-Omeka-Key-Identity, X-Omeka-Key-Credential',
           'Access-Control-Max-Age': '600',
           Vary: 'Origin',
         }
@@ -35,6 +38,8 @@ export default {
     const path = url.searchParams.get('path') || '';
     if (!/^[a-z_]+(\/[0-9]+)?$/.test(path)) return fail(400, 'chemin invalide');
     url.searchParams.delete('path');
+    const ident = request.headers.get('x-omeka-key-identity'), cred = request.headers.get('x-omeka-key-credential');
+    if (ident && cred) { url.searchParams.set('key_identity', ident); url.searchParams.set('key_credential', cred); }
 
     const init = { method: request.method, headers: { Accept: 'application/json' } };
     if (request.method !== 'GET' && request.method !== 'DELETE') {
@@ -46,7 +51,7 @@ export default {
 
     let r;
     try { r = await fetch(API_URL + path + url.search, init); }
-    catch (e) { return fail(502, 'API Omeka S injoignable depuis le relais'); }
+    catch (e) { return fail(502, 'la base commune (humanum-p8.fr) ne répond pas au relais : réessaie dans quelques minutes.'); }
     const body = r.status === 204 ? null : await r.arrayBuffer();
     return new Response(body, {
       status: r.status,

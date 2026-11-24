@@ -41,6 +41,14 @@ Sur papier, on n'a qu'une page et on ne la refait pas. En numérique :
 
 L'écriture dans la base demande toujours une clé API Omeka : GitHub, Google et le CAS servent à dire **qui** on est (un participant par compte : `fournisseur` + `identifiant`). Si la base refuse la clé, la page l'explique et passe en lecture seule.
 
+### Où va la clé API
+
+- **Jamais dans l'adresse des requêtes** : la page l'envoie au relais dans deux en-têtes (`X-Omeka-Key-Identity`, `X-Omeka-Key-Credential`). Elle n'apparaît donc ni dans l'historique, ni dans les journaux de Vercel. C'est le relais qui l'ajoute à l'adresse de l'API, côté serveur, car Omeka S ne la lit que là.
+- **Gardée seulement dans l'onglet** par défaut (`sessionStorage`) : elle s'efface quand on ferme l'onglet.
+- **« Garder ma clé sur cet ordinateur »** la garde dans le navigateur (`localStorage`) jusqu'à « Se déconnecter ». À ne pas cocher sur un ordinateur partagé.
+- **« Se déconnecter »** efface la clé partout. Après une connexion CAS, la page ferme aussi la session du CAS de Paris 8 (`/cas/logout`), puis revient sur la page.
+- **Si le relais ne répond plus**, la page le dit : « Le relais Vercel (…) ne répond pas : la base commune est inaccessible depuis cette page pour le moment ». Si c'est la base commune qui ne répond pas, le relais le dit aussi.
+
 ### Fonctionnalités
 
 | Fonction | Détail |
@@ -109,7 +117,15 @@ ArtificialInquiries_1/
 
 ## 7. Tests
 
-La page a été testée de bout en bout sur un Omeka S 4.2.1 de test, avec les relais et un faux CAS : connexion avec et sans clé, clé refusée, mode sans compte, GitHub, Google, CAS, puis Create, Read, Update et Delete (avec les images et les traits).
+La page a été testée de bout en bout sur un Omeka S 4.2.1 de test, avec les relais et un faux CAS (37 vérifications) : connexion avec et sans clé, clé refusée, mode sans compte, GitHub, Google, CAS, puis Create, Read, Update et Delete (avec les images et les traits). Les tests vérifient aussi que la clé n'est dans aucune adresse de requête, qu'elle est effacée à la déconnexion, et les messages quand le relais ou la base ne répondent pas.
+
+**Avec le vrai CAS de Paris 8** (`cas.univ-paris8.fr`), le 24/11/2026 :
+
+| Étape | Résultat |
+|---|---|
+| « Se connecter avec l'université » | la page de connexion du CAS s'ouvre et accepte l'adresse de `response.html` comme service |
+| Vérification du ticket par le relais `api/cas` | le relais interroge bien le vrai CAS : un faux ticket est refusé (`INVALID_TICKET`, « le ticket … est inconnu ») |
+| Déconnexion | `/cas/logout?service=…` ferme la session du CAS et renvoie sur `response.html` |
 
 ## 8. Références
 

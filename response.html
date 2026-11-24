@@ -113,7 +113,8 @@
           <input type="password" id="f-cred" autocomplete="off">
         </label>
       </div>
-      <label class="check"><input type="checkbox" id="f-remember"> Se souvenir de moi sur cet ordinateur</label>
+      <label class="check"><input type="checkbox" id="f-remember"> Garder ma clé sur cet ordinateur</label>
+      <p class="hint" style="margin:0">Sans cette case, la clé reste seulement dans cet onglet et s'efface quand tu le fermes. Avec, elle reste dans le navigateur jusqu'à « Se déconnecter » : ne la coche pas sur un ordinateur partagé. La clé ne passe jamais dans l'adresse des requêtes.</p>
     </div>
     <div class="or">
       <button class="big" id="btn-login">Se connecter</button>
@@ -338,13 +339,17 @@
     if (viaProxy()) { u = new URL(S.settings.apiProxy); u.searchParams.set('path', path); }
     else u = new URL(path, apiBase());
     for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
-    if (S.useKey && S.settings.ident && S.settings.cred) {
+    // Omeka S direct (en local) : la clé ne peut aller que dans l'adresse. Par le relais : dans les en-têtes (keyHeaders)
+    if (!viaProxy() && S.useKey && S.settings.ident && S.settings.cred) {
       u.searchParams.set('key_identity', S.settings.ident);
       u.searchParams.set('key_credential', S.settings.cred);
     }
     return u;
   }
+  const keyHeaders = () => (viaProxy() && S.useKey && S.settings.ident && S.settings.cred)
+    ? { 'X-Omeka-Key-Identity': S.settings.ident, 'X-Omeka-Key-Credential': S.settings.cred } : {};
   function omekaError(data, status) {
+    if (data && data.errors && data.errors.relais) return 'Relais Vercel : ' + data.errors.relais;
     if (data && data.errors) {
       const flat = [];
       const walk = v => { if (typeof v === 'string') flat.push(v); else if (v && typeof v === 'object') Object.values(v).forEach(walk); };
@@ -354,16 +359,16 @@
     return 'Omeka S a répondu avec une erreur (' + status + ').';
   }
   async function api(path, { method = 'GET', params, json, form } = {}) {
-    const opts = { method };
-    if (json) { opts.headers = { 'Content-Type': 'application/json' }; opts.body = JSON.stringify(json); }
+    const opts = { method, headers: keyHeaders() };
+    if (json) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(json); }
     if (form) opts.body = form;
     let r;
     try { r = await fetch(apiUrl(path, params), opts); }
     catch (e) {
+      if (viaProxy()) throw new Error("Le relais Vercel (" + new URL(S.settings.apiProxy).host + ") ne répond pas : la base commune est inaccessible depuis cette page pour le moment. Réessaie dans quelques minutes.");
       if (/^https?:\/\/(localhost|127\.0\.0\.1)[:/]/.test(S.settings.api)) {
         throw new Error("Impossible de joindre ton Omeka S local. Vérifie que XAMPP est allumé (Apache et MySQL). Si c'est le cas, ton navigateur a peut-être bloqué l'accès : clique sur l'icône à gauche de l'adresse de la page et autorise l'accès au réseau local, puis recharge la page.");
       }
-      if (viaProxy()) throw new Error("Le relais de l'API (" + S.settings.apiProxy + ") ne répond pas. Réessaie dans un instant.");
       throw new Error("Impossible de joindre Omeka S à l'adresse " + S.settings.api + ". Vérifie l'adresse dans « Réglages avancés ».");
     }
     const text = await r.text();
@@ -548,10 +553,14 @@
     if (S.keyRefused) say('Bonjour ' + user.name + ' ! ' + KEY_REFUSED + ' En attendant, la page est en lecture seule.', 'warn');
     else say('Bonjour ' + user.name + ' !' + (S.canWrite ? '' : ' (lecture seule)'));
   }
+  // Se déconnecter = oublier aussi la clé (onglet et ordinateur), et fermer la session du CAS si on venait de là
   function signOut() {
+    const wasCas = S.user && S.user.provider === 'cas';
     S.user = null; S.participantId = null; S.canWrite = false; S.useKey = false; S.keyRefused = false;
-    store.del('user');
+    store.del('user'); store.del('key');
+    S.settings.ident = ''; S.settings.cred = ''; S.settings.remember = false;
     try { if (window.google && google.accounts) google.accounts.id.disableAutoSelect(); } catch (e) {}
+    if (wasCas) { location.href = S.settings.cas.replace(/\/+$/, '') + '/logout?service=' + encodeURIComponent(serviceUrl()); return; }
     showLogin();
   }
 

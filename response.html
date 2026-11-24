@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // La page est servie par Vercel. L'ancienne adresse GitHub Pages y renvoie, en gardant ?code=…&state=…
+  // (retour de la connexion GitHub, dont l'adresse de retour déclarée est restée sur GitHub Pages).
+  if (location.hostname === 'antoinejarnoux.github.io') location.replace('https://artificialinquiries1.vercel.app/' + location.search + location.hash);
+</script>
 <title>Artificial Inquiries — Exercice 1</title>
 <style>
   :root {
@@ -240,6 +245,8 @@
     github: 'Ov23liYZ0M39fXFUlDTL',  // Client ID de l'application OAuth GitHub (public) ; vide = connexion par jeton personnel
     githubProxy: 'https://artificialinquiries1.vercel.app/api/github',  // relais (api/github.mjs) : échange le code avec le secret
   };
+  // Adresse de retour déclarée dans l'application OAuth GitHub (elle renvoie vers la page sur Vercel)
+  const GITHUB_CALLBACK = 'https://antoinejarnoux.github.io/ArtificialInquiries_1/response.html';
   const PREFIX = 'artinq';
   const COMMON_API = 'https://humanum-p8.fr/omk_artificialinquiries/api/';  // base commune, appelée via le relais
   // Termes du vocabulaire commun artinq utilisés par cette page
@@ -587,7 +594,7 @@
     const state = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
     store.set('ghPending', state, true);
     location.href = 'https://github.com/login/oauth/authorize?client_id=' + encodeURIComponent(S.settings.github) +
-      '&redirect_uri=' + encodeURIComponent(serviceUrl()) + '&state=' + state + '&allow_signup=false';
+      '&redirect_uri=' + encodeURIComponent(GITHUB_CALLBACK) + '&state=' + state + '&allow_signup=false';
   }
   async function githubCallback(code, state) {
     const expected = store.get('ghPending', true);

@@ -6,8 +6,8 @@
 // Adresse : https://<projet>.vercel.app/api/cas?service=...&ticket=ST-...
 
 const CAS_URL = 'https://cas.univ-paris8.fr/cas';
-const SERVICE_PREFIX = 'https://antoinejarnoux.github.io/ArtificialInquiries_1/'; // seules les pages de ce dépôt
-const ALLOWED = /^(https:\/\/antoinejarnoux\.github\.io|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
+const SERVICES = ['https://artificialinquiries1.vercel.app/', 'https://antoinejarnoux.github.io/ArtificialInquiries_1/']; // seules les pages de ce dépôt
+const ALLOWED = /^(https:\/\/(artificialinquiries1\.vercel\.app|antoinejarnoux\.github\.io)|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
 
 const xmlText = (xml, re) => {
   const m = xml.match(re);
@@ -28,7 +28,7 @@ export default {
     const q = new URL(request.url).searchParams;
     const service = q.get('service') || '';
     const ticket = q.get('ticket') || '';
-    if (!service.startsWith(SERVICE_PREFIX)) return reply({ error: 'service non autorisé' }, 400);
+    if (!SERVICES.some(s => service.startsWith(s))) return reply({ error: 'service non autorisé' }, 400);
     if (!/^ST-[A-Za-z0-9._-]+$/.test(ticket)) return reply({ error: 'ticket invalide' }, 400);
 
     // Vérification du ticket auprès du serveur CAS (protocole CAS 2, réponse XML)

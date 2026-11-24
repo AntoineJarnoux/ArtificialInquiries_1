@@ -10,7 +10,11 @@
 // dans l'URL : le relais l'y ajoute ici, côté serveur (connexion HTTPS vers la base commune).
 
 const API_URL = 'https://humanum-p8.fr/omk_artificialinquiries/api/';
-const ALLOWED = /^(https:\/\/antoinejarnoux\.github\.io|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
+const ALLOWED = /^(https:\/\/(artificialinquiries1\.vercel\.app|antoinejarnoux\.github\.io)|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
+// La page est servie par Vercel, à la même adresse que le relais : pour une lecture (GET) sur la même adresse,
+// le navigateur n'envoie pas d'en-tête Origin, mais il envoie Sec-Fetch-Site: same-origin.
+const fromPage = request => ALLOWED.test(request.headers.get('origin') || '') ||
+  (!request.headers.get('origin') && request.headers.get('sec-fetch-site') === 'same-origin');
 const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
 export default {
@@ -30,7 +34,7 @@ export default {
     });
 
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
-    if (!ALLOWED.test(origin)) return fail(403, 'page non autorisée par le relais');
+    if (!fromPage(request)) return fail(403, 'page non autorisée par le relais');
     if (!METHODS.includes(request.method)) return fail(405, 'méthode non autorisée');
 
     // Chemin de l'API (items, items/12, media, resource_templates…) et paramètres d'origine, sans « path »

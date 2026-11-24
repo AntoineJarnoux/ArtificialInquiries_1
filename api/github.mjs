@@ -7,10 +7,15 @@
 // Adresse : https://<projet>.vercel.app/api/github?code=...
 
 const CLIENT_ID = 'Ov23liYZ0M39fXFUlDTL';   // identifiant public de l'application OAuth GitHub
+// Adresse de retour déclarée dans l'application OAuth GitHub : l'ancienne page GitHub Pages,
+// qui renvoie aussitôt vers la page sur Vercel en gardant ?code=…&state=…
 const REDIRECT_URI = 'https://antoinejarnoux.github.io/ArtificialInquiries_1/response.html';
 const GITHUB = 'https://github.com';
 const GITHUB_API = 'https://api.github.com';
-const ALLOWED = /^(https:\/\/antoinejarnoux\.github\.io|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
+const ALLOWED = /^(https:\/\/(artificialinquiries1\.vercel\.app|antoinejarnoux\.github\.io)|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
+// Page servie à la même adresse que le relais : pas d'en-tête Origin pour un GET, mais Sec-Fetch-Site: same-origin
+const fromPage = request => ALLOWED.test(request.headers.get('origin') || '') ||
+  (!request.headers.get('origin') && request.headers.get('sec-fetch-site') === 'same-origin');
 
 export default {
   async fetch(request) {
@@ -20,7 +25,7 @@ export default {
       status, headers: { ...cors, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
     });
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
-    if (!ALLOWED.test(origin)) return reply({ error: 'page non autorisée par le relais' }, 403);
+    if (!fromPage(request)) return reply({ error: 'page non autorisée par le relais' }, 403);
 
     const code = new URL(request.url).searchParams.get('code') || '';
     if (!/^[A-Za-z0-9_-]{8,100}$/.test(code)) return reply({ error: 'code GitHub invalide' }, 400);

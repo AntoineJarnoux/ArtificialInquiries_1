@@ -2,7 +2,7 @@
 
 Transformation en outil numérique de l'**exercice 1** du vademecum *Artificial Inquiries: A Vademecum for Workers in the Age of AI* (Alcaras, Ricci, Prinetti, de Vries, médialab Sciences Po, 2025 — [https://hal.science/hal-05327878](https://hal.science/hal-05327878)).
 
-**Page en ligne : [https://antoinejarnoux.github.io/ArtificialInquiries_1/response.html](https://antoinejarnoux.github.io/ArtificialInquiries_1/response.html)**
+**Page en ligne : [https://artificialinquiries1.vercel.app/](https://artificialinquiries1.vercel.app/)** (l'ancienne adresse [https://antoinejarnoux.github.io/ArtificialInquiries_1/response.html](https://antoinejarnoux.github.io/ArtificialInquiries_1/response.html) y renvoie).
 
 ---
 
@@ -67,21 +67,28 @@ L'écriture dans la base demande toujours une clé API Omeka : GitHub, Google et
 
 ```mermaid
 flowchart LR
-    U(["Participant"]) --> P["response.html<br/>GitHub Pages"]
-    P -->|"API Omeka S"| R1["Relais api/omk<br/>Vercel"]
+    U(["Participant"]) --> P["response.html<br/>artificialinquiries1.vercel.app"]
+    GP["ancienne adresse<br/>GitHub Pages"] -.->|"renvoie"| P
+    subgraph V["Vercel (même adresse)"]
+        P
+        R1["Relais api/omk"]
+        R2["Relais api/cas"]
+        R3["Relais api/github"]
+    end
+    P -->|"API Omeka S"| R1
     R1 --> O[("Base Omeka S commune<br/>humanum-p8.fr")]
-    P -->|"ticket CAS"| R2["Relais api/cas<br/>Vercel"]
+    P -->|"ticket CAS"| R2
     R2 --> C["CAS Paris 8"]
-    P -->|"code GitHub"| R3["Relais api/github<br/>Vercel"]
+    P -->|"code GitHub"| R3
     R3 --> G["GitHub OAuth"]
     P -->|"Google Identity Services"| GG["Google"]
 ```
 
-- **Page** : HTML / CSS / JavaScript sans framework, en un seul fichier, publiée sur GitHub Pages.
-- **Pourquoi des relais** : la base commune n'envoie pas d'en-tête CORS, donc un navigateur ne peut pas l'appeler depuis `github.io`. Les fonctions Vercel du dossier `api/` font l'appel côté serveur et ajoutent l'en-tête CORS. Elles n'acceptent que la page de ce dépôt (et `localhost` pour les tests), et ne relaient que la base commune.
+- **Page** : HTML / CSS / JavaScript sans framework, en un seul fichier. Vercel la sert à la racine du site (`vercel.json` : `/` → `response.html`), donc on arrive directement sur l'écran de connexion. `.vercelignore` fait que Vercel ne publie que la page et les relais. L'ancienne page GitHub Pages renvoie vers Vercel.
+- **Pourquoi des relais** : la base commune n'envoie pas d'en-tête CORS, donc un navigateur ne peut pas l'appeler depuis une autre adresse. Les fonctions Vercel du dossier `api/`, à la même adresse que la page, font l'appel côté serveur. Elles n'acceptent que la page de ce dépôt (et `localhost` pour les tests), et ne relaient que la base commune.
   - `api/omk.mjs` : relaie l'API Omeka S (GET, POST, PUT, DELETE, envoi d'images).
   - `api/cas.mjs` : vérifie le ticket du CAS de Paris 8 (`serviceValidate`), que le navigateur ne peut pas vérifier seul.
-  - `api/github.mjs` : échange le code GitHub contre un jeton avec le secret de l'application OAuth (variable Vercel `GITHUB_CLIENT_SECRET`), puis renvoie seulement le nom public. Le jeton et le secret ne vont jamais dans la page.
+  - `api/github.mjs` : échange le code GitHub contre un jeton avec le secret de l'application OAuth (variable Vercel `GITHUB_CLIENT_SECRET`), puis renvoie seulement le nom public. Le jeton et le secret ne vont jamais dans la page. L'adresse de retour déclarée chez GitHub est restée l'ancienne page GitHub Pages, qui renvoie aussitôt vers Vercel avec le code.
 - **Dessin** : Canvas 2D + Pointer Events (souris, doigt, stylet). Chaque trait est gardé comme `{outil, couleur, epaisseur, points[]}`, ce qui permet d'annuler et de redessiner.
 
 ### Les données dans Omeka S
@@ -96,6 +103,8 @@ flowchart LR
 ```
 ArtificialInquiries_1/
 ├── response.html              la page (interface + CRUD)
+├── vercel.json                la racine du site Vercel affiche response.html
+├── .vercelignore              Vercel ne publie que la page et api/
 ├── api/
 │   ├── omk.mjs                relais de l'API Omeka S (Vercel)
 │   ├── cas.mjs                relais de validation CAS (Vercel)
@@ -110,14 +119,14 @@ ArtificialInquiries_1/
 
 ## 6. Mise en place (pour refaire le déploiement)
 
-1. **GitHub Pages** sur la branche `main` (racine) : la page est servie sur `https://<compte>.github.io/ArtificialInquiries_1/response.html`.
-2. **Vercel** : importer le dépôt (préréglage « Other »). Les fichiers de `api/` deviennent les relais `https://<projet>.vercel.app/api/...`.
-3. **GitHub OAuth** : créer une application OAuth (GitHub → Settings → Developer settings → OAuth Apps) avec comme *callback URL* l'adresse de `response.html`, mettre son Client ID dans `response.html` (`DEFAULTS.github`) et `api/github.mjs`, et son secret dans la variable Vercel `GITHUB_CLIENT_SECRET`.
-4. **Google** : un Client ID OAuth « Application Web » avec l'origine `https://<compte>.github.io`, dans `DEFAULTS.google`.
+1. **Vercel** : importer le dépôt (préréglage « Other »). La page est servie à la racine `https://<projet>.vercel.app/` et les fichiers de `api/` deviennent les relais `https://<projet>.vercel.app/api/...`.
+2. **GitHub Pages** sur la branche `main` (racine) : garde l'ancienne adresse, qui renvoie vers Vercel (script en tête de `response.html`).
+3. **GitHub OAuth** : créer une application OAuth (GitHub → Settings → Developer settings → OAuth Apps) avec comme *callback URL* l'adresse GitHub Pages de `response.html` (`GITHUB_CALLBACK` dans la page, `REDIRECT_URI` dans `api/github.mjs`), mettre son Client ID dans `response.html` (`DEFAULTS.github`) et `api/github.mjs`, et son secret dans la variable Vercel `GITHUB_CLIENT_SECRET`.
+4. **Google** : un Client ID OAuth « Application Web » avec l'origine `https://<projet>.vercel.app` dans « Origines JavaScript autorisées », dans `DEFAULTS.google`.
 
 ## 7. Tests
 
-La page a été testée de bout en bout sur un Omeka S 4.2.1 de test, avec les relais et un faux CAS (37 vérifications) : connexion avec et sans clé, clé refusée, mode sans compte, GitHub, Google, CAS, puis Create, Read, Update et Delete (avec les images et les traits). Les tests vérifient aussi que la clé n'est dans aucune adresse de requête, qu'elle est effacée à la déconnexion, et les messages quand le relais ou la base ne répondent pas.
+La page a été testée de bout en bout sur un Omeka S 4.2.1 de test, avec les relais et un faux CAS (37 vérifications, plus 6 pour l'adresse Vercel : écran de connexion à la racine, renvoi depuis github.io, retour GitHub, CAS et visiteur) : connexion avec et sans clé, clé refusée, mode sans compte, GitHub, Google, CAS, puis Create, Read, Update et Delete (avec les images et les traits). Les tests vérifient aussi que la clé n'est dans aucune adresse de requête, qu'elle est effacée à la déconnexion, et les messages quand le relais ou la base ne répondent pas.
 
 **Avec le vrai CAS de Paris 8** (`cas.univ-paris8.fr`), le 24/11/2026 :
 

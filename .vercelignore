@@ -1,0 +1,7 @@
+# Vercel ne publie que la page (response.html) et les relais (api/) ; le reste reste sur GitHub
+omk.sql
+cas/
+resource-template/
+artificial_inquiries.ttl
+diagram_class.md
+README.md

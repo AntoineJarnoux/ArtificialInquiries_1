@@ -2,9 +2,12 @@
 //
 // GitHub renvoie la personne sur response.html avec un « code » à usage unique. Échanger ce code
 // demande le secret de l'application OAuth, qui ne doit jamais être dans la page : cette fonction
-// fait l'échange côté serveur, lit le profil public, et renvoie seulement { login, name, id }.
+// fait l'échange côté serveur, lit le profil public, et renvoie { login, name, id } et un jeton de session
+// signé (lib/session.mjs) qui permet d'écrire dans la base par api/omk.
 // Le secret est la variable d'environnement Vercel GITHUB_CLIENT_SECRET.
 // Adresse : https://<projet>.vercel.app/api/github?code=...
+
+import { sign } from '../lib/session.mjs';
 
 const CLIENT_ID = 'Ov23liYZ0M39fXFUlDTL';   // identifiant public de l'application OAuth GitHub
 // Adresse de retour déclarée dans l'application OAuth GitHub : l'ancienne page GitHub Pages,
@@ -48,7 +51,9 @@ export default {
       });
       if (!r.ok) return reply({ error: 'GitHub ne donne pas le profil (' + r.status + ')' }, 502);
       const u = await r.json();
-      return reply({ login: u.login, name: u.name || u.login, id: u.id, avatar: u.avatar_url });
+      // Jeton de session signé : il permet ensuite d'enregistrer dans la base par le relais api/omk
+      const token = sign({ p: 'github', id: u.login, name: u.name || u.login });
+      return reply({ login: u.login, name: u.name || u.login, id: u.id, avatar: u.avatar_url, token });
     } catch (e) {
       return reply({ error: 'GitHub injoignable depuis le relais' }, 502);
     }

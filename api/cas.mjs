@@ -5,6 +5,8 @@
 // en JSON à response.html. Même rôle que cas/validate.php, mais hébergé en ligne.
 // Adresse : https://<projet>.vercel.app/api/cas?service=...&ticket=ST-...
 
+import { sign } from '../lib/session.mjs';
+
 const CAS_URL = 'https://cas.univ-paris8.fr/cas';
 const SERVICES = ['https://artificialinquiries1.vercel.app/', 'https://antoinejarnoux.github.io/ArtificialInquiries_1/']; // seules les pages de ce dépôt
 const ALLOWED = /^(https:\/\/(artificialinquiries1\.vercel\.app|antoinejarnoux\.github\.io)|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?)$/;
@@ -40,7 +42,12 @@ export default {
     } catch (e) { return reply({ error: 'serveur CAS injoignable depuis le relais' }, 502); }
 
     const user = xmlText(xml, /<cas:user>([\s\S]*?)<\/cas:user>/);
-    if (user) return reply({ serviceResponse: { authenticationSuccess: { user } } });
+    if (user) {
+      // Jeton de session signé : il permet ensuite d'enregistrer dans la base par le relais api/omk
+      let token = null;
+      try { token = sign({ p: 'cas', id: user, name: user }); } catch (e) { return reply({ error: e.message }, 500); }
+      return reply({ serviceResponse: { authenticationSuccess: { user } }, token });
+    }
     if (!/authenticationFailure/.test(xml)) return reply({ error: 'réponse CAS illisible' }, 502);
     const code = (xml.match(/<cas:authenticationFailure[^>]*code=["']([^"']*)["']/) || [])[1] || '';
     const description = xmlText(xml, /<cas:authenticationFailure[^>]*>([\s\S]*?)<\/cas:authenticationFailure>/) || 'ticket refusé';

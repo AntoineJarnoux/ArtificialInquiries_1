@@ -112,6 +112,8 @@ Chaque classe est un item de la base commune, avec la classe `artinq` du même n
 | ReponseTexte | Ex1 ReponseTexte | `dcterms:title`, `artinq:repondA`, `artinq:texte`, `artinq:dateModification` |
 | Trait | Ex1 Trait | `artinq:outil`, `artinq:couleur`, `artinq:epaisseur`, `artinq:points` |
 
+Le relais ajoute à chaque item écrit `dcterms:creator` = `fournisseur:identifiant` de la personne connectée (par exemple `github:AntoineJarnoux`) : il ne laisse modifier ou supprimer un item qu'à son auteur.
+
 Les **Points** d'un trait ne sont pas des items : ils sont dans `artinq:points`, en JSON (liste de couples `[x, y]` sur un carré de 900 × 900) :
 
 ```json

@@ -79,6 +79,8 @@
   .methods { display: grid; gap: 12px; grid-template-columns: minmax(0, 360px); margin-top: 14px; }
   .methods button.big { width: 100%; }
   #google-button { min-height: 44px; }
+  .visitor { margin: 18px 0 0; padding-top: 12px; border-top: 1px solid var(--rule); }
+  button.link { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; font-size: 15px; }
   .boards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   @media (max-width: 700px) { .boards { grid-template-columns: minmax(0, 1fr); } }
   .board { display: grid; gap: 6px; min-width: 0; }
@@ -113,6 +115,7 @@
       <p class="hint" id="google-hint" hidden></p>
       <button class="big ghost" id="btn-cas">Se connecter avec l'université (Paris 8)</button>
     </div>
+    <p class="visitor"><button class="link" id="btn-visitor">Voir les réponses sans compte</button> <span class="hint">(lecture seule)</span></p>
   </section>
 
   <!-- ÉCRAN 2 : mes réponses -->
@@ -455,6 +458,15 @@
     showLogin();
   }
 
+  // 0) Sans compte : on regarde les réponses de tout le monde, sans pouvoir écrire
+  async function loginVisitor() {
+    S.user = { provider: 'visiteur', id: '', name: 'Visiteur' }; S.session = null;
+    store.set('user', S.user); store.del('session');
+    await connect();
+    S.participantId = null;
+    showHome();
+  }
+
   // 1) GitHub : page d'autorisation GitHub, puis le relais échange le code (il a le secret) et donne la session
   function loginGithubOAuth() {
     const state = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
@@ -528,7 +540,7 @@
   // Le compte devient un item Participant (artinq:fournisseur + artinq:identifiant)
   async function attachParticipant() {
     S.participantId = null;
-    if (!S.user) return;
+    if (!S.user || S.user.provider === 'visiteur') return;
     const found = await api('items', { params: {
       resource_template_id: S.meta.RT[TPL + 'Participant'],
       'property[0][property]': S.meta.P[PREFIX + ':identifiant'], 'property[0][type]': 'eq', 'property[0][text]': String(S.user.id),
@@ -844,6 +856,7 @@
     $('screen-home').hidden = name !== 'home';
     $('screen-edit').hidden = name !== 'edit';
     $('who').hidden = name === 'login';
+    $('btn-logout').textContent = S.user && S.user.provider === 'visiteur' ? 'Se connecter' : 'Se déconnecter';
     if (S.user) {
       $('who-name').textContent = S.user.name;
       $('who-avatar').hidden = !S.user.avatar;
@@ -857,7 +870,7 @@
     $('home-title').textContent = readOnlyAll() ? 'Les réponses' : 'Mes réponses';
     $('all-wrap').hidden = readOnlyAll();
     $('ro-note').hidden = !ro;
-    $('ro-note').textContent = ro ? 'Lecture seule : reconnecte-toi pour faire l\'exercice.' : '';
+    $('ro-note').textContent = ro ? 'Lecture seule : pour faire l\'exercice, clique sur « Se connecter » en haut et choisis GitHub, Google ou l\'université.' : '';
   }
   async function showHome() { S.editing = null; show('home'); applyMode(); await refreshList(); }
 
@@ -868,6 +881,7 @@
     setupTools();
     $('btn-github-oauth').onclick = guard(async () => loginGithubOAuth());
     $('btn-cas').onclick = guard(async () => loginCas());
+    $('btn-visitor').onclick = guard(loginVisitor);
     initGoogle();
     $('btn-logout').onclick = signOut;
     $('btn-new').onclick = () => openEditor(null);
@@ -891,7 +905,7 @@
     }
     // Session encore ouverte dans cet onglet (après un rechargement)
     const saved = store.get('user'), session = store.get('session');
-    if (saved && session) {
+    if (saved && (session || saved.provider === 'visiteur')) {
       try { S.user = saved; S.session = session; await connect(); await attachParticipant(); return showHome(); }
       catch (e) { S.user = null; S.session = null; say(e.message, 'err'); }
     }

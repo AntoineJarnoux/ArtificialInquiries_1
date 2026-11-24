@@ -38,8 +38,9 @@ On arrive sur l'écran de connexion. Trois boutons, rien à remplir :
 | **GitHub** | page « Authorize » de GitHub, puis retour sur l'exercice |
 | **Google** | choix du compte Google, puis retour sur l'exercice |
 | **Université Paris 8 (CAS)** | page de connexion de la fac, puis retour sur l'exercice |
+| **Sans compte** (lien « Voir les réponses sans compte ») | lecture seule : on voit les réponses de tout le monde |
 
-Une fois connecté, on peut faire l'exercice, relire, modifier et supprimer **ses** réponses, et regarder celles des autres. Chaque compte devient un `Participant` dans la base (`fournisseur` + `identifiant`).
+Une fois connecté, on peut faire l'exercice, relire, modifier et supprimer **ses** réponses, et regarder celles des autres. Chaque compte devient un `Participant` dans la base (`fournisseur` + `identifiant`). Sans compte, rien n'est créé dans la base.
 
 ### Où sont les secrets
 
@@ -139,9 +140,10 @@ ArtificialInquiries_1/
 
 ## 7. Tests
 
-La page a été testée de bout en bout sur un Omeka S 4.2.1 de test, avec les relais, un faux CAS et un faux GitHub / Google (26 vérifications, plus 5 pour l'adresse Vercel) :
+La page a été testée de bout en bout sur un Omeka S 4.2.1 de test, avec les relais, un faux CAS et un faux GitHub / Google (29 vérifications, plus 5 pour l'adresse Vercel) :
 
-- écran de connexion : seulement GitHub, Google et l'université, aucun champ à remplir ;
+- écran de connexion : GitHub, Google, l'université et le lien « sans compte », aucun champ à remplir ;
+- sans compte : lecture seule de toutes les réponses, rien de créé dans la base ;
 - connexion GitHub, Google et CAS (avec annulation, code refusé, jeton Google d'une autre application) ;
 - Create, Read, Update et Delete (avec les images et les traits), tout étiqueté par le relais ;
 - règles du relais : écriture refusée sans session ou avec une session inventée, hors modèles « Ex1 », pour un participant au nom de quelqu'un d'autre, sur l'item « Exercice », ou sur la réponse (ou l'image) de quelqu'un d'autre ; message clair si la clé n'est pas réglée sur Vercel ;
